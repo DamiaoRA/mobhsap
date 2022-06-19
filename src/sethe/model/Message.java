@@ -5,7 +5,8 @@ import java.sql.Timestamp;
 public class Message {
 	private String category;
 	private String poi;
-	private String user;
+	private int trajectoryId;
+	private int userId;
 	private double x;
 	private double y;
 	private Timestamp datetime;
@@ -26,12 +27,20 @@ public class Message {
 		this.poi = poi;
 	}
 
-	public String getUser() {
-		return user;
+	public int getUserId() {
+		return userId;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	public int getTrajectoryId() {
+		return trajectoryId;
+	}
+
+	public void setTrajectoryId(int trajectoryId) {
+		this.trajectoryId = trajectoryId;
 	}
 
 	public double getX() {

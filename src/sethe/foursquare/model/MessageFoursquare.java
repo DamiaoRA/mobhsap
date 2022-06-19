@@ -4,8 +4,8 @@ import sethe.model.Message;
 
 public class MessageFoursquare extends Message {
 	private String weather;
-	private int rating;
-	private int price;
+	private double rating;
+	private double price;
 	private String day;
 
 	public String getWeather() {
@@ -16,19 +16,19 @@ public class MessageFoursquare extends Message {
 		this.weather = weather;
 	}
 
-	public int getRating() {
+	public double getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(double rating) {
 		this.rating = rating;
 	}
 
-	public int getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(int price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
@@ -38,6 +38,13 @@ public class MessageFoursquare extends Message {
 
 	public void setDay(String day) {
 		this.day = day;
+	}
+	
+	@Override
+	public String toString() {
+		return getUserId() + "\n" + getTrajectoryId() + "\n" +
+			   getDatetime() + "\n" +
+			   getPoi() + "\n" + getCategory();
 	}
 
 }
