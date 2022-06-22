@@ -1,46 +1,47 @@
 package sethe.model;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 public class Message {
-	private String category;
-	private String poi;
-	private int trajectoryId;
-	private int userId;
+	private Set<String> categories;
+	private Set<String> pois;
+	private String trajectoryName;
+	private String userName;
 	private double x;
 	private double y;
 	private Timestamp datetime;
 
-	public String getCategory() {
-		return category;
+	public Set<String> getCategories() {
+		return categories;
 	}
 
-	public void setCategory(String category) {
-		this.category = category;
+	public void setCategories(Set<String> categories) {
+		this.categories = categories;
 	}
 
-	public String getPoi() {
-		return poi;
+	public Set<String> getPois() {
+		return pois;
 	}
 
-	public void setPoi(String poi) {
-		this.poi = poi;
+	public void setPois(Set<String> pois) {
+		this.pois = pois;
 	}
 
-	public int getUserId() {
-		return userId;
+	public String getTrajectoryName() {
+		return trajectoryName;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setTrajectoryName(String trajectoryName) {
+		this.trajectoryName = trajectoryName;
 	}
 
-	public int getTrajectoryId() {
-		return trajectoryId;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setTrajectoryId(int trajectoryId) {
-		this.trajectoryId = trajectoryId;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public double getX() {
@@ -65,5 +66,10 @@ public class Message {
 
 	public void setDatetime(Timestamp datetime) {
 		this.datetime = datetime;
+	}
+
+	public String toString() {
+		return getUserName() + "\n" + getTrajectoryName() + "\n" + getDatetime() + "\n" + getPois() + "\n" + getCategories()
+				+ "\n";
 	}
 }

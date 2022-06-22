@@ -20,4 +20,6 @@ public interface AspectDAOIF {
 	 * @throws SQLException 
 	 */
 	public abstract void putAspectsValues(PreparedStatement ps, int parameterIndex, Message m) throws SQLException;
+	
+	public abstract void finish() throws SQLException;
 }

@@ -2,8 +2,10 @@ package sethe.foursquare;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import sethe.datasource.AspectDAOIF;
 import sethe.foursquare.model.MessageFoursquare;
@@ -12,6 +14,12 @@ import sethe.model.Message;
 public class FoursquareAspectDAO implements AspectDAOIF {
 	private String[] columns = {"id_price", "id_rating", "id_weather"};
 	private Connection conn;
+
+	private int idPriceCounter = 1;
+	private int idRatingCounter = 1;
+	private int idWeatherCounter = 1;
+
+	private Map<String, Integer> mapId = new HashMap<String, Integer>();
 
 	private PreparedStatement psPriceInsert;
 	private PreparedStatement psPriceSearch;
@@ -30,81 +38,97 @@ public class FoursquareAspectDAO implements AspectDAOIF {
 	private void start(Connection conn) throws SQLException {
 		this.conn = conn;
 
-		psPriceInsert = conn.prepareStatement("INSERT INTO tb_price(value) VALUES (?)");
+		psPriceInsert = conn.prepareStatement("INSERT INTO tb_price(id, value) VALUES (?,?)");
 		psPriceSearch = conn.prepareStatement("SELECT id FROM tb_price WHERE value = ?");
 
-		psRatingInsert = conn.prepareStatement("INSERT INTO tb_rating(value) VALUES (?)");
+		psRatingInsert = conn.prepareStatement("INSERT INTO tb_rating(id, value) VALUES (?,?)");
 		psRatingSearch = conn.prepareStatement("SELECT id FROM tb_rating WHERE value = ?");
 
-		psWeatherInsert = conn.prepareStatement("INSERT INTO tb_weather(value) VALUES (?)");
+		psWeatherInsert = conn.prepareStatement("INSERT INTO tb_weather(id,value) VALUES (?,?)");
 		psWeatherSearch = conn.prepareStatement("SELECT id FROM tb_weather WHERE value = ?");
+	}
+	
+	@Override
+	public void finish() throws SQLException {
+		Statement st = conn.createStatement();
+		st.execute("ALTER SEQUENCE tb_price_id_seq RESTART WITH " + idPriceCounter);
+		st.execute("ALTER SEQUENCE tb_rating_id_seq RESTART WITH " + idRatingCounter);
+		st.execute("ALTER SEQUENCE tb_weather_id_seq RESTART WITH " + idWeatherCounter);
 	}
 
 	private int insertPrice(double price) throws SQLException {
-		Integer id = searchPrice(price);
+		Integer id = mapId.get("price_" + price);
 
 		if(id == null) {
-			psPriceInsert.setDouble(1, price);
+			id = idPriceCounter++;
+			psPriceInsert.setInt(1, id);
+			psPriceInsert.setDouble(2, price);
 			psPriceInsert.execute();
-			id = searchPrice(price);
+
+			mapId.put("price_" + price, id);
 		}
 
 		return id;
 	}
 
-	private Integer searchPrice(double price) throws SQLException {
-		psPriceSearch.setDouble(1, price);
-		ResultSet rs = psPriceSearch.executeQuery();
-
-		if(rs.next()) {
-			return rs.getInt(1);
-		}
-		return null;
-	}
+//	private Integer searchPrice(double price) throws SQLException {
+//		psPriceSearch.setDouble(1, price);
+//		ResultSet rs = psPriceSearch.executeQuery();
+//
+//		if(rs.next()) {
+//			return rs.getInt(1);
+//		}
+//		return null;
+//	}
 	
 	private int insertRating(double rating) throws SQLException {
-		Integer id = searchRating(rating);
+		Integer id = mapId.get("rating_" + rating);
 
 		if(id == null) {
-			psRatingInsert.setDouble(1, rating);
+			id = idRatingCounter++;
+			psRatingInsert.setInt(1, id);
+			psRatingInsert.setDouble(2, rating);
 			psRatingInsert.execute();
-			id = searchRating(rating);
+			
+			mapId.put("rating_" + rating, id);
 		}
 
 		return id;
 	}
 
-	private Integer searchRating(double rating) throws SQLException {
-		psRatingSearch.setDouble(1, rating);
-		ResultSet rs = psRatingSearch.executeQuery();
-
-		if(rs.next()) {
-			return rs.getInt(1);
-		}
-		return null;
-	}
+//	private Integer searchRating(double rating) throws SQLException {
+//		psRatingSearch.setDouble(1, rating);
+//		ResultSet rs = psRatingSearch.executeQuery();
+//
+//		if(rs.next()) {
+//			return rs.getInt(1);
+//		}
+//		return null;
+//	}
 	
 	private int insertWeather(String weather) throws SQLException {
-		Integer id = searchWeather(weather);
+		Integer id = mapId.get("weather_" + weather);
 
 		if(id == null) {
-			psWeatherInsert.setString(1, weather);
+			id = idWeatherCounter++;
+			psWeatherInsert.setInt(1, id);
+			psWeatherInsert.setString(2, weather);
 			psWeatherInsert.execute();
-			id = searchWeather(weather);
+			mapId.put("weather_" + weather, id);
 		}
 
 		return id;
 	}
 
-	private Integer searchWeather(String weather) throws SQLException {
-		psWeatherSearch.setString(1, weather);
-		ResultSet rs = psWeatherSearch.executeQuery();
-
-		if(rs.next()) {
-			return rs.getInt(1);
-		}
-		return null;
-	}
+//	private Integer searchWeather(String weather) throws SQLException {
+//		psWeatherSearch.setString(1, weather);
+//		ResultSet rs = psWeatherSearch.executeQuery();
+//
+//		if(rs.next()) {
+//			return rs.getInt(1);
+//		}
+//		return null;
+//	}
 
 	@Override
 	public void putAspectsValues(PreparedStatement ps, int parameterIndex, Message m) throws SQLException {
@@ -122,5 +146,4 @@ public class FoursquareAspectDAO implements AspectDAOIF {
 		ps.setInt(parameterIndex++, idRating);
 		ps.setInt(parameterIndex++, idWeather);
 	}
-
 }

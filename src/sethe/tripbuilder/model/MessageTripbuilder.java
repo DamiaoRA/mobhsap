@@ -12,4 +12,8 @@ public class MessageTripbuilder extends Message {
 	public void setTransportMeans(String transportMeans) {
 		this.transportMeans = transportMeans;
 	}
+	
+	public String toString() {
+		return super.toString() + transportMeans + "\n";
+	}
 }
