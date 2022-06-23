@@ -3,6 +3,8 @@ package sethe.foursquare;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -38,13 +40,20 @@ public class FoursquareInput implements InputMessageIF{
 		MessageFoursquare m = null;
 		if(rs.next()) {
 			m = new MessageFoursquare();
-			m.setUserId(rs.getInt("anonymized_user_id"));
-			m.setTrajectoryId(rs.getInt("tid"));
+			m.setUserName(rs.getInt("anonymized_user_id")+"");
+			m.setTrajectoryName(rs.getInt("tid")+"");
 			m.setX(rs.getDouble("lat"));
 			m.setY(rs.getDouble("lon"));
 			m.setDatetime(rs.getTimestamp("date_time"));
-			m.setPoi(rs.getString("poi_name"));
-			m.setCategory(rs.getString("poi_category"));
+
+			Set<String> pois = new HashSet<String>();
+			pois.add(rs.getString("poi_name"));
+			m.setPois(pois);
+
+			Set<String> cats = new HashSet<String>();
+			cats.add(rs.getString("poi_category"));
+			m.setCategories(cats);
+
 			m.setPrice(rs.getDouble("price"));
 			m.setRating(rs.getDouble("rating"));
 			m.setWeather(rs.getString("weather"));

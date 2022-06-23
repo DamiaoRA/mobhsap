@@ -39,12 +39,9 @@ public class MessageFoursquare extends Message {
 	public void setDay(String day) {
 		this.day = day;
 	}
-	
+
 	@Override
 	public String toString() {
-		return getUserId() + "\n" + getTrajectoryId() + "\n" +
-			   getDatetime() + "\n" +
-			   getPoi() + "\n" + getCategory();
+		return super.toString() + "\n" + price + "\n";
 	}
-
 }
