@@ -42,7 +42,7 @@ public class MessageDAO {
 	protected PreparedStatement psPoiRepetition;
 
 	protected PreparedStatement psPoiCategoryInsert;
-	
+
 	private PreparedStatement psFato;
 
 	private Map<String, Integer> mapId = new HashMap<String, Integer>();
@@ -327,5 +327,14 @@ public class MessageDAO {
 				psFato.execute();
 			}
 		}
+	}
+
+	public void calculateTrajectorySize() throws SQLException {
+		String sql = "UPDATE tb_trajectory set size = ("
+				   + "SELECT max(position) "
+				   + "FROM fato "
+				   + "WHERE fato.id_trajectory = tb_trajectory.id)";
+
+		conn.createStatement().executeLargeUpdate(sql);		
 	}
 }

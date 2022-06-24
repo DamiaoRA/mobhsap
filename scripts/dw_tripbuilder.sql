@@ -60,6 +60,7 @@ CREATE TABLE tb_user(
 CREATE TABLE tb_trajectory(
 	id int default nextval('tb_traj_id_seq'),
 	id_user int,
+	size int,
 	value varchar(100),
 	CONSTRAINT pk_trajectory PRIMARY KEY(id),
 	CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES tb_user(id)

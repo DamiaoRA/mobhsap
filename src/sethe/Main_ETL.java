@@ -17,15 +17,15 @@ public class Main_ETL {
 	public static void main(String[] args) throws Exception {
 		long t1 = System.currentTimeMillis();
 		
-		ETL etl = new ETL();
-		etl.setInput(new FoursquareInput());
-		etl.setAspectDAO(new FoursquareAspectDAO());
-		etl.start();
-
 //		ETL etl = new ETL();
-//		etl.setInput(new TripBuilderInput());
-//		etl.setAspectDAO(new TripBuilderAspectDAO());
+//		etl.setInput(new FoursquareInput());
+//		etl.setAspectDAO(new FoursquareAspectDAO());
 //		etl.start();
+
+		ETL etl = new ETL();
+		etl.setInput(new TripBuilderInput());
+		etl.setAspectDAO(new TripBuilderAspectDAO());
+		etl.start();
 
 		long t2 = System.currentTimeMillis();
 		
