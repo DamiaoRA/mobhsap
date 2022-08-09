@@ -33,7 +33,7 @@ public class TripBuilderInput implements InputMessageIF {
 	private Calendar time;
 
 	public TripBuilderInput() throws SQLException {
-		config = new HikariConfig("/tripbuilder.properties");
+		config = new HikariConfig("/tripbuilderInput.properties");
 		ds = new HikariDataSource(config);
 
 		//debug

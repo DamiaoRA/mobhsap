@@ -1,0 +1,60 @@
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+  { ?v1 text:query "torridipisa" .
+     ?stop1 ex:enrichedBy ?v1. }
+  {
+      {?stop2 ex:enrichedBy ?v2 . ?v2 text:query "cappelledipisa"}
+      union {?stop2 ex:enrichedby ?v3. ?v3 text:query "chiesedipisa"}
+    }
+   {  ?stop3 ex:enrichedBy ?v4 .
+      ?v4 text:query "museidipisa" }
+  ?t ex:has ?stop1; ex:has ?stop3; ex:has ?stop2 .
+  ?stop1 ex:next ?stop2.
+  ?stop2 ex:next ?stop3.
+}
+
+
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+  ?v1 text:query "torridipisa" .
+  ?v2 text:query "cappelledipisa" .
+  ?v3 text:query "chiesedipisa" .
+  ?v4 text:query "museidipisa" .
+  { 
+     ?stop1 ex:enrichedBy ?v1. }
+  {
+      {?stop2 ex:enrichedBy ?v2 . }
+      union {?stop2 ex:enrichedby ?v3. }
+    }
+   {  ?stop3 ex:enrichedBy ?v4 .
+       }
+  ?t ex:has ?stop1; ex:has ?stop3; ex:has ?stop2 .
+  ?stop1 ex:next ?stop2.
+  ?stop2 ex:next ?stop3.
+}
+
+-----------------------------
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+  { ?v1 <http://localhost:8080/vocab/category> "torridipisa" .
+     ?stop1 ex:enrichedBy ?v1. }
+  {
+      {?stop2 ex:enrichedBy ?v2 . ?v2 <http://localhost:8080/vocab/category> "cappelledipisa"}
+      union {?stop2 ex:enrichedBy ?v3. ?v3 <http://localhost:8080/vocab/category> "chiesedipisa"}
+    }
+   {  ?stop3 ex:enrichedBy ?v4 .
+      ?v4 <http://localhost:8080/vocab/category> "museidipisa" }
+  ?t ex:has ?stop1; ex:has ?stop3; ex:has ?stop2 .
+  ?stop1 ex:next ?stop2.
+  ?stop2 ex:next ?stop3.
+}
+
+
+resultado 15 (enrichedby escrito errado)
+tempo 637ms
+
+resultado 22
+

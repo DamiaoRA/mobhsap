@@ -1,0 +1,38 @@
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+  { ?v1 text:query "Torre_del_Leone" .
+    ?stop1 ex:enrichedBy ?v1. 
+    ?v2 text:query "Torre_pendente_di_Pisa " .
+    ?stop2 ex:enrichedBy ?v2. 
+	?t ex:has ?stop1; ex:has ?stop2 .
+    ?stop1 ex:next ?stop2 }
+  UNION{
+   ?v3 text:query "Torre_pendente_di_Pisa" .
+   ?stop3 ex:enrichedBy ?v3.
+   ?v4 text:query "Torre_del_Leone" .
+   ?stop4 ex:enrichedBy ?v4.
+   ?t ex:has ?stop3;  ex:has ?stop4 .
+   ?stop3 ex:next ?stop4 } }
+
+
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select distinct ?t{
+  { ?v1 rdfs:label "Torre_del_Leone" .
+    ?stop1 ex:enrichedBy ?v1. 
+    ?v2 rdfs:label "Torre_pendente_di_Pisa" .
+    ?stop2 ex:enrichedBy ?v2. 
+	?t ex:has ?stop1; ex:has ?stop2 .
+    ?stop1 ex:next ?stop2 }
+  UNION{
+   ?v3 rdfs:label "Torre_pendente_di_Pisa" .
+   ?stop3 ex:enrichedBy ?v3.
+   ?v4 rdfs:label "Torre_del_Leone" .
+   ?stop4 ex:enrichedBy ?v4.
+   ?t ex:has ?stop3;  ex:has ?stop4 .
+   ?stop3 ex:next ?stop4 } }
+
+resultado 3
+tempo 32ms

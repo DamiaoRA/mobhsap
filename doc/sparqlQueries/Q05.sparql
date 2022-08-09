@@ -1,0 +1,24 @@
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+ ?v1 text:query "museidipisa".
+ ?stop1 ex:enrichedBy ?v1 .
+ ?v2 text:query "cappelledipisa".
+ ?stop2 ex:enrichedBy ?v2 .
+ ?t ex:begins ?stop1; ex:ends ?stop2 .
+ ?stop1 ex:next ?stop2 }
+
+
+
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+ ?v1 <http://localhost:8080/vocab/category> "museidipisa".
+ ?stop1 ex:enrichedBy ?v1 .
+ ?v2 <http://localhost:8080/vocab/category> "cappelledipisa".
+ ?stop2 ex:enrichedBy ?v2 .
+ ?t ex:begins ?stop1; ex:ends ?stop2 .
+ ?stop1 ex:next ?stop2 }
+
+resultado 5
+tempo 30ms

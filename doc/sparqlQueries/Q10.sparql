@@ -1,0 +1,41 @@
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t{
+	?v1 text:query "torridipisa" .
+	?stop1 ex:enrichedBy ?v1 .
+	?v2 text:query "chiesedipisa" .
+	?stop2 ex:enrichedBy ?v2.   
+	?v3 text:query "palazzidipisa" .
+	?stop3 ex:enrichedBy ?v3 .
+	?move1 ex:from ?stop1; ex:to ?stopM; ex:enrichedBy res:Walk .
+	?move2 ex:from ?stopM; ex:to ?stop2; ex:enrichedBy res:Bus .
+	?move3 ex:from ?stop2; ex:to ?stop3 .
+	?t ex:has ?move1; ex:has ?move2; ex:has ?stopM; ex:has ?move3;
+	     ex:begins ?stop1; ex:has ?stop2; ex:ends ?stop3
+}
+
+
+
+----------------------------------------------------------------
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t where {
+	?v1 ex:category "torridipisa" .
+	?stop1 ex:enrichedBy ?v1 .
+	?v2 ex:category "chiesedipisa" .
+	?stop2 ex:enrichedBy ?v2 .
+	?v3 ex:category "palazzidipisa" .
+	?stop3 ex:enrichedBy ?v3 .
+	?move1 ex:from ?stop1; ex:to ?stopM; ex:enrichedBy res:Walk .
+	?move2 ex:from ?stopM; ex:to ?stop2; ex:enrichedBy res:Bus .
+	?move3 ex:from ?stop2; ex:to ?stop3 .
+	?t ex:has ?move1; ex:has ?move2; ex:has ?stopM; ex:has ?move3;
+	     ex:begins ?stop1; ex:has ?stop2; ex:ends ?stop3
+}
+
+resposta 2
+tempo 49 min
+
+res:TP2212
+res:TP314

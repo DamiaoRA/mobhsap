@@ -1,0 +1,35 @@
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t{
+ ?v1 text:query "museidipisa" .
+ ?stop1 ex:enrichedBy ?v1 .
+ ?v2 text:query "cappelledipisa".
+ ?stop2 ex:enrichedBy ?v2 .
+   ?t ex:has ?move .
+   ?move  ex:from ?stop1 .
+   ?move ex:to ?stop2 .
+   ?move ex:enrichedBy ?transportation .
+   filter (?transportation = res:Bus)
+ ?t ex:has ?stop1; ex:has ?stop2 
+}
+
+
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t{
+ ?v1 <http://localhost:8080/vocab/category> "museidipisa" .
+ ?stop1 ex:enrichedBy ?v1 .
+ ?v2 <http://localhost:8080/vocab/category> "cappelledipisa".
+ ?stop2 ex:enrichedBy ?v2 .
+   ?t ex:has ?move .
+   ?move  ex:from ?stop1 .
+   ?move ex:to ?stop2 .
+   ?move ex:enrichedBy ?transportation .
+   filter (?transportation = res:Bus)
+ ?t ex:has ?stop1; ex:has ?stop2 
+}
+
+resultado 10
+tempo 620 ms

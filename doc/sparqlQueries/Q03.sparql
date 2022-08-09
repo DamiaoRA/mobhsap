@@ -1,0 +1,41 @@
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+	?v1 text:query "torridipisa" .
+	?stop1 ex:enrichedBy ?v1. 
+	?v2 text:query "torridipisa" .
+	?stop2 ex:enrichedBy ?v2. 
+	?v3 text:query "museidipisa" .
+	?stop3 ex:enrichedBy ?v3.
+	?t ex:has ?stop1; ex:has ?stop2; ex:has ?stop3  
+	filter not exists {
+	  ?t ex:has ?stopM.
+	  ?stop1 ex:next* ?stopM.
+	  ?stopM ex:next* ?stop2.
+	  filter not exists { ?stopM ex:enrichedBy ?vM . ?vM text:query "torridipisa"}
+	}
+	?stop2 ex:next ?stop3 .
+}
+
+
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+	?v1 <http://localhost:8080/vocab/category> "torridipisa" .
+	?stop1 ex:enrichedBy ?v1. 
+	?v2 <http://localhost:8080/vocab/category> "torridipisa" .
+	?stop2 ex:enrichedBy ?v2. 
+	?v3 <http://localhost:8080/vocab/category> "museidipisa" .
+	?stop3 ex:enrichedBy ?v3.
+	?t ex:has ?stop1; ex:has ?stop2; ex:has ?stop3  
+	filter not exists {
+	  ?t ex:has ?stopM.
+	  ?stop1 ex:next* ?stopM.
+	  ?stopM ex:next* ?stop2.
+	  filter not exists { ?stopM ex:enrichedBy ?vM . ?vM <http://localhost:8080/vocab/category> "torridipisa"}
+	}
+	?stop2 ex:next ?stop3 .
+}
+
+resultado 46
+tempo 3.7s

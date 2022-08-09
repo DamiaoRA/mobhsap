@@ -1,0 +1,40 @@
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+  ?stop1 ex:enrichedBy ?v1 .
+  ?v1 text:query "museidipisa".
+  ?stop2 ex:enrichedBy ?v2 .
+  ?v2 text:query "cappelledipisa" .
+  ?t ex:has ?stop1; ex:has ?stop2.
+  ?stop1 ex:next ?stop2 }
+
+
+prefix ex: <http://localhost:8080/vocab/>
+select distinct ?t{
+  ?v1 text:query "museidipisa".
+  ?v2 text:query "cappelledipisa" .
+  ?v1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/POI> .
+  ?v2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/POI> .
+  ?stop1 ex:enrichedBy ?v1 .
+  ?stop2 ex:enrichedBy ?v2 .
+  ?t ex:has ?stop1; ex:has ?stop2.
+  ?stop1 ex:next ?stop2 }
+
+
+ 
+
+----------------------------------------------------
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select distinct ?t{
+  ?stop1 ex:enrichedBy ?v1 .
+  ?v1 <http://localhost:8080/vocab/category> "museidipisa" .
+  ?stop2 ex:enrichedBy ?v2 .
+  ?v2 <http://localhost:8080/vocab/category> "cappelledipisa" .
+  ?t ex:has ?stop1; ex:has ?stop2.
+  ?stop1 ex:next ?stop2 }
+
+resultado 33
+tempo1 110ms
+tempo2 40ms

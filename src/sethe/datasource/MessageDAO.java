@@ -186,7 +186,7 @@ public class MessageDAO {
 	private Integer insertUser(Message m) throws SQLException {
 		Integer idUser = mapId.get("user_" + m.getUserName());
 		if(idUser == null) {
-			idUser = idUserCounter;
+			idUser = idUserCounter++;
 			psUserInsert.setInt(1, idUser);
 			psUserInsert.setString(2, m.getUserName());
 			psUserInsert.execute();

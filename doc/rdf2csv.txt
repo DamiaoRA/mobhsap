@@ -1,0 +1,168 @@
+
+--Transportation
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?object ?label
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Transportation> .
+  ?object rdfs:label ?label .
+}
+
+---------------------
+--PoI
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?object ?label ?category ?lat ?lon ?locatedIn
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/POI> .
+  ?object rdfs:label ?label .
+  ?object <http://localhost:8080/vocab/category> ?category .
+  ?object <http://localhost:8080/vocab/latitude> ?lat .
+  ?object <http://localhost:8080/vocab/longitude> ?lon .
+  ?object <http://localhost:8080/vocab/locatedIn> ?locatedIn
+}
+ORDER BY ?object
+
+------------------
+--Stop
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?object ?poi ?lat ?lon
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Stop> .
+  ?object <http://localhost:8080/vocab/enrichedBy> ?poi .
+  ?object <http://localhost:8080/vocab/latitude> ?lat .
+  ?object <http://localhost:8080/vocab/longitude> ?lon
+}
+ORDER BY ?object
+
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?object ?poi ?lat ?lon ?next
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Stop> .
+  ?object <http://localhost:8080/vocab/enrichedBy> ?poi .
+  ?object <http://localhost:8080/vocab/latitude> ?lat .
+  ?object <http://localhost:8080/vocab/longitude> ?lon .
+  ?object <http://localhost:8080/vocab/next> ?next .
+}
+ORDER BY ?object
+
+------------------
+--Move
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?object ?transport ?from ?to ?move_number ?traj
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Move> .
+  ?object <http://localhost:8080/vocab/enrichedBy> ?transport .
+  ?object <http://localhost:8080/vocab/from> ?from .
+  ?object <http://localhost:8080/vocab/to> ?to .
+  ?object <http://localhost:8080/vocab/move_number> ?move_number .
+  ?traj <http://localhost:8080/vocab/has> ?object .
+}
+ORDER BY ?object
+
+------------------
+--Trajectory
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?object ?begins ?ends ?has ?length
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Trajectory> .
+  ?object <http://localhost:8080/vocab/begins> ?begins .
+  ?object <http://localhost:8080/vocab/ends> ?ends .
+  ?object <http://localhost:8080/vocab/has> ?has .
+  ?object <http://localhost:8080/vocab/length> ?length .
+}
+ORDER BY ?object
+
+
+
+
+--------------------------**---------------------------
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?object ?poi ?lat ?lon ?next
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Stop> .
+  ?object <http://localhost:8080/vocab/enrichedBy> ?poi .
+  ?object <http://localhost:8080/vocab/latitude> ?lat .
+  ?object <http://localhost:8080/vocab/longitude> ?lon .
+  ?object <http://localhost:8080/vocab/next> ?next .
+  FILTER(regex(str(?object), "http://localhost:8080/resource/TF1_SF797" ) )
+}
+ORDER BY ?object
+LIMIT 100
+
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?object ?begins ?ends ?has ?length
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Trajectory> .
+  ?object <http://localhost:8080/vocab/begins> ?begins .
+  ?object <http://localhost:8080/vocab/ends> ?ends .
+  ?object <http://localhost:8080/vocab/has> ?has .
+  ?object <http://localhost:8080/vocab/length> ?length .
+  #FILTER(regex(str(?object), "http://localhost:8080/resource/TF10000" ) )
+  FILTER (?length = "1"^^xsd:integer)
+}
+ORDER BY ?object
+limit 100
+
+
+-----RASCUNHO
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ex: <http://localhost:8080/vocab/>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?object ?move ?number ?cat1 ?cat2
+WHERE {
+  ?object <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Trajectory> .
+  ?object <http://localhost:8080/vocab/has> ?move .
+  ?move <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Move> .
+  ?move <http://localhost:8080/vocab/move_number> ?number .
+  ?move <http://localhost:8080/vocab/from> ?from .
+  ?from ex:enrichedBy ?poi1 .
+  ?poi1 ex:category ?cat1 .
+  ?move <http://localhost:8080/vocab/to> ?to .
+  ?to ex:enrichedBy ?poi2 .
+  ?poi2 ex:category ?cat2 .
+      
+  
+#  ?begins <http://localhost:8080/vocab/next> ?next .
+  
+  #?object <http://localhost:8080/vocab/ends> ?ends .
+#  ?object <http://localhost:8080/vocab/has> ?stop .
+#  ?stop <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Stop> .
+#  ?stop ex:enrichedBy ?poi .
+#  ?poi ex:category ?cat .
+#  ?object <http://localhost:8080/vocab/length> ?length .
+  FILTER(regex(str(?object), "http://localhost:8080/resource/TP371" ) )
+}
+ORDER BY ?object
+
+limit 100

@@ -1,0 +1,40 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX re: <http://www.w3.org/2000/10/swap/reason#>
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t{
+  ?v1 text:query "museidipisa".
+  ?stop1 ex:enrichedBy ?v1 .
+  ?t ex:has ?stop1.
+  Optional
+  {
+      {?stop2 ex:enrichedBy ?v2 . ?v2 text:query "cappelledipisa"}
+      union {?stop2 ex:enrichedby ?v3. ?v3 text:query "chiesedipisa"}
+    ?t ex:has ?stop2; ex:ends ?stop2.
+    ?stop1 ex:next* ?stop2.
+  }  
+}
+
+
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX re: <http://www.w3.org/2000/10/swap/reason#>
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t{
+  ?v1 <http://localhost:8080/vocab/category> "museidipisa".
+  ?stop1 ex:enrichedBy ?v1 .
+  ?t ex:has ?stop1.
+  Optional
+  {
+      {?stop2 ex:enrichedBy ?v2 . ?v2 <http://localhost:8080/vocab/category> "cappelledipisa"}
+      union {?stop2 ex:enrichedBy ?v3. ?v3 <http://localhost:8080/vocab/category> "chiesedipisa"}
+    ?t ex:has ?stop2; ex:ends ?stop2.
+    ?stop1 ex:next* ?stop2.
+  }  
+}
+
+resultado 607
+tempo 480 ms

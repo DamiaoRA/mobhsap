@@ -21,14 +21,15 @@ public class FoursquareInput implements InputMessageIF{
 	private ResultSet rs;
 
 	public FoursquareInput() throws SQLException {
-		config = new HikariConfig("/foursquare.properties");
+		config = new HikariConfig("/foursquareInput.properties");
 		ds = new HikariDataSource(config);
+//		ds.setSchema(config.getSchema());
 
 		String sql = 
 				"SELECT anonymized_user_id, tid, lat, lon, "
 						+ "date_time, day, poi_name, poi_category, "
 						+ "price, rating, weather "
-						+ "FROM public.data_checkin "
+						+ "FROM data_checkin "
 						+ "ORDER BY anonymized_user_id, tid, date_time";
 
 		conn = ds.getConnection();

@@ -23,12 +23,12 @@ import sethe.util.StringUtils;
  * Consulta a trajetória com base nos PoI ou (categoria de PoI) e usa o contexto para ordenar os resultados
  *
  */
-public class QueryTrajectoryMain {
+public class QuerySETHEMain {
 	private Connection con;
 	private Statement st;
 	private String schema = "trajSem";
 
-	public QueryTrajectoryMain(String url1, String port, String user, String pass, String schema) throws SQLException {
+	public QuerySETHEMain(String url1, String port, String user, String pass, String schema) throws SQLException {
 		String url = "jdbc:postgresql://" + url1 + ":" + port + "/trajetoria";
 		this.schema = schema;
 		Properties props = new Properties();
@@ -38,7 +38,7 @@ public class QueryTrajectoryMain {
 		st = con.createStatement();
 	}
 
-	private void executeQuery(CompositeQuery query) throws Exception {
+	public void executeQuery(CompositeQuery query) throws Exception {
 		for(Query filter : query.getMapFilter().values()) {
 			searchTrajectories(filter);
 			for(Trajectory t : filter.getMapResultQuery().values()) {
@@ -98,17 +98,17 @@ public class QueryTrajectoryMain {
 	public static void main(String[] args) throws Exception {
 
 		//Properties file
-		InputStream is = QueryTrajectoryMain.class.getResourceAsStream("semantic.properties");
+		InputStream is = QuerySETHEMain.class.getResourceAsStream("semantic.properties");
 		Properties properties = new Properties();
 		properties.load(new InputStreamReader(is, Charset.forName("UTF-8")));
 
 		String schema = properties.getProperty("schema");
 		CompositeQuery query = loadQuery(properties);
 
-		QueryTrajectoryMain qt = null;
+		QuerySETHEMain qt = null;
 
 		try {
-			qt = new QueryTrajectoryMain("localhost", "25432", "postgres", "postgres", schema);
+			qt = new QuerySETHEMain("localhost", "25432", "postgres", "postgres", schema);
 			long t1 = System.currentTimeMillis();
 
 			qt.executeQuery(query);

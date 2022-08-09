@@ -1,0 +1,104 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX re: <http://www.w3.org/2000/10/swap/reason#>
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t
+where{
+ { 
+   { ?stop1 ex:enrichedBy ?v1.   
+     ?v1 text:query "cappelledipisa" }
+  UNION
+   { ?stop1 ex:enrichedBy ?v2.   
+     ?v2 text:query "chiesedipisa" } 
+ } 
+ {
+   ?stop2 ex:enrichedBy ?v3.
+   ?v3 ?q "Torre_pendente_di_Pisa"
+ }
+ ?t ex:begins ?stop1; ex:ends ?stop2
+ filter not exists {
+   ?t  ex:has ?move; ex:has ?moveA.
+   ?move ex:from ?stop1.
+   ?move (ex:to/ex:from)* ?moveA.
+   ?moveA (ex:to/ex:from)* [ex:to ?stop2].
+   ?move  ex:enrichedBy ?type .
+   ?moveA ex:enrichedBy ?typeA 
+   filter (?type != res:Bus && ?typeA != res:Bus)
+ }
+}
+
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX re: <http://www.w3.org/2000/10/swap/reason#>
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t
+where{
+ { 
+   { ?stop1 ex:enrichedBy ?v1.   
+     ?v1 <http://localhost:8080/vocab/category> "cappelledipisa" }
+  UNION
+   { ?stop1 ex:enrichedBy ?v2.   
+     ?v2 <http://localhost:8080/vocab/category> "chiesedipisa" } 
+ } 
+ {
+   ?stop2 ex:enrichedBy ?v3.
+   ?v3 ?q "Torre_pendente_di_Pisa"
+ }
+ ?t ex:begins ?stop1; ex:ends ?stop2
+ filter not exists {
+   ?t  ex:has ?move; ex:has ?moveA.
+   ?move ex:from ?stop1.
+   ?move (ex:to/ex:from)* ?moveA.
+   ?moveA (ex:to/ex:from)* [ex:to ?stop2].
+   ?move  ex:enrichedBy ?type .
+   ?moveA ex:enrichedBy ?typeA 
+   filter (?type != res:Bus && ?typeA != res:Bus)
+ }
+}
+
+resultado 27
+tempo 47 ms
+
+
+--------Consulta correta
+-- precisa informar o tipo Move
+-- não existe relação entre dois move
+-- o filtro precisa checar todas as condições do move 
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX re: <http://www.w3.org/2000/10/swap/reason#>
+prefix text: <http://jena.apache.org/text#>
+prefix ex: <http://localhost:8080/vocab/>
+prefix res: <http://localhost:8080/resource/>
+select distinct ?t ?stop1 ?stop2 ?move ?moveA
+where{
+ { 
+   { ?stop1 ex:enrichedBy ?v1.   
+     ?v1 <http://localhost:8080/vocab/category> "cappelledipisa" }
+  UNION
+   { ?stop1 ex:enrichedBy ?v2.   
+     ?v2 <http://localhost:8080/vocab/category> "chiesedipisa" } 
+ } 
+ {
+   ?stop2 ex:enrichedBy ?v3.
+   ?v3 ?q "Torre_pendente_di_Pisa"
+ }
+ ?t ex:begins ?stop1; ex:ends ?stop2 .
+ filter not exists {
+   ?t  ex:has ?move; ex:has ?moveA.
+    
+    ?move <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Move> .
+    ?moveA <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://localhost:8080/vocab/Move> .
+    
+   ?move ex:from ?stop1.
+#   ?move (ex:from/ex:to)* ?moveA.
+   ?moveA (ex:from/ex:to)* [ex:to ?stop2].
+   ?move  ex:enrichedBy ?type .
+   ?moveA ex:enrichedBy ?typeA 
+#   filter (?type != res:Bus && ?typeA != res:Bus)
+    filter ((?type != res:Bus && ?typeA != res:Bus) || (?type = res:Bus && ?typeA != res:Bus) || (?type != res:Bus && ?typeA = res:Bus))
+  }
+}

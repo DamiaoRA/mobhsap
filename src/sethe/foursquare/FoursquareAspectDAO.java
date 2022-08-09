@@ -22,13 +22,10 @@ public class FoursquareAspectDAO implements AspectDAOIF {
 	private Map<String, Integer> mapId = new HashMap<String, Integer>();
 
 	private PreparedStatement psPriceInsert;
-	private PreparedStatement psPriceSearch;
 	
 	private PreparedStatement psRatingInsert;
-	private PreparedStatement psRatingSearch;
 	
 	private PreparedStatement psWeatherInsert;
-	private PreparedStatement psWeatherSearch;
 
 	@Override
 	public String[] columnsAspectsId() {
@@ -39,13 +36,10 @@ public class FoursquareAspectDAO implements AspectDAOIF {
 		this.conn = conn;
 
 		psPriceInsert = conn.prepareStatement("INSERT INTO tb_price(id, value) VALUES (?,?)");
-		psPriceSearch = conn.prepareStatement("SELECT id FROM tb_price WHERE value = ?");
 
 		psRatingInsert = conn.prepareStatement("INSERT INTO tb_rating(id, value) VALUES (?,?)");
-		psRatingSearch = conn.prepareStatement("SELECT id FROM tb_rating WHERE value = ?");
 
 		psWeatherInsert = conn.prepareStatement("INSERT INTO tb_weather(id,value) VALUES (?,?)");
-		psWeatherSearch = conn.prepareStatement("SELECT id FROM tb_weather WHERE value = ?");
 	}
 	
 	@Override
@@ -71,15 +65,6 @@ public class FoursquareAspectDAO implements AspectDAOIF {
 		return id;
 	}
 
-//	private Integer searchPrice(double price) throws SQLException {
-//		psPriceSearch.setDouble(1, price);
-//		ResultSet rs = psPriceSearch.executeQuery();
-//
-//		if(rs.next()) {
-//			return rs.getInt(1);
-//		}
-//		return null;
-//	}
 	
 	private int insertRating(double rating) throws SQLException {
 		Integer id = mapId.get("rating_" + rating);
@@ -96,15 +81,6 @@ public class FoursquareAspectDAO implements AspectDAOIF {
 		return id;
 	}
 
-//	private Integer searchRating(double rating) throws SQLException {
-//		psRatingSearch.setDouble(1, rating);
-//		ResultSet rs = psRatingSearch.executeQuery();
-//
-//		if(rs.next()) {
-//			return rs.getInt(1);
-//		}
-//		return null;
-//	}
 	
 	private int insertWeather(String weather) throws SQLException {
 		Integer id = mapId.get("weather_" + weather);
@@ -119,16 +95,6 @@ public class FoursquareAspectDAO implements AspectDAOIF {
 
 		return id;
 	}
-
-//	private Integer searchWeather(String weather) throws SQLException {
-//		psWeatherSearch.setString(1, weather);
-//		ResultSet rs = psWeatherSearch.executeQuery();
-//
-//		if(rs.next()) {
-//			return rs.getInt(1);
-//		}
-//		return null;
-//	}
 
 	@Override
 	public void putAspectsValues(PreparedStatement ps, int parameterIndex, Message m) throws SQLException {

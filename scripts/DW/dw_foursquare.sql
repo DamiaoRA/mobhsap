@@ -18,7 +18,8 @@
 --drop SEQUENCE tb_rating_id_seq;
 --drop SEQUENCE tb_weather_id_seq;
 
-SET search_path TO public;
+CREATE SCHEMA dw_foursquare;
+SET search_path TO dw_foursquare;
 
 /**
  * Script default
@@ -64,6 +65,7 @@ CREATE TABLE tb_user(
 CREATE TABLE tb_trajectory(
 	id int default nextval('tb_traj_id_seq'),
 	id_user int,
+	size int,
 	value varchar(100),
 	CONSTRAINT pk_trajectory PRIMARY KEY(id),
 	CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES tb_user(id)
