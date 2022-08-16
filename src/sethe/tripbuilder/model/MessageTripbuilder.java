@@ -16,4 +16,16 @@ public class MessageTripbuilder extends Message {
 	public String toString() {
 		return super.toString() + transportMeans + "\n";
 	}
+
+	@Override
+	public String getAspectsToString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getAspectType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

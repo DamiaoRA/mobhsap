@@ -126,7 +126,7 @@ public class TripBuilderInput implements InputMessageIF {
 			m.setX(rs.getDouble("lon"));
 			m.setY(rs.getDouble("lat"));
 		} while(rs.next());
-		m.setTrajectoryName(trajectoryId);
+		m.setTrajectoryNumber(trajectoryId);
 		m.setCategories(categories);
 		m.setPois(pois);
 		m.setTransportMeans(move);
@@ -155,7 +155,7 @@ public class TripBuilderInput implements InputMessageIF {
 			categories.add(rs.getString("category"));
 			pois.add(rs.getString("label"));
 		} while(rs.next());
-		m.setTrajectoryName(trajectoryId);
+		m.setTrajectoryNumber(trajectoryId);
 		m.setCategories(categories);
 		m.setPois(pois);
 		m.setDatetime(new Timestamp(time.getTimeInMillis()));

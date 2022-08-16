@@ -3,14 +3,17 @@ package sethe.model;
 import java.sql.Timestamp;
 import java.util.Set;
 
-public class Message {
+public abstract class Message {
 	private Set<String> categories;
 	private Set<String> pois;
-	private String trajectoryName;
+	private String trajectoryNumber;
 	private String userName;
 	private double x;
 	private double y;
 	private Timestamp datetime;
+	private String city;
+	private String state;
+	private String country;
 
 	public Set<String> getCategories() {
 		return categories;
@@ -28,12 +31,12 @@ public class Message {
 		this.pois = pois;
 	}
 
-	public String getTrajectoryName() {
-		return trajectoryName;
+	public String getTrajectoryNumber() {
+		return trajectoryNumber;
 	}
 
-	public void setTrajectoryName(String trajectoryName) {
-		this.trajectoryName = trajectoryName;
+	public void setTrajectoryNumber(String num) {
+		this.trajectoryNumber = num;
 	}
 
 	public String getUserName() {
@@ -68,8 +71,54 @@ public class Message {
 		this.datetime = datetime;
 	}
 
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
 	public String toString() {
-		return getUserName() + "\n" + getTrajectoryName() + "\n" + getDatetime() + "\n" + getPois() + "\n" + getCategories()
+		return getUserName() + "\n" + getTrajectoryNumber() + "\n" + getDatetime() + "\n" + getPois() + "\n" + getCategories()
 				+ "\n";
 	}
+
+	public String getOneCategory() {
+		if(getCategories().isEmpty())
+			return null;
+		for(String c : getCategories()) return c;
+		return null;
+	}
+
+	public String getOnePoi() {
+		if(getPois().isEmpty())
+			return null;
+		for(String p:getPois()) return p;
+		return null;
+	}
+
+	public String poiToString() {
+		return x + y + getOnePoi() + getOneCategory() + city + state + country;
+	}
+
+	public abstract String getAspectsToString();
+	
+	public abstract String getAspectType();
 }

@@ -22,7 +22,7 @@ public class ETL {
 			insertFato(m);
 			m = nextMessage();
 		}
-		messageDAO.calculateTrajectorySize();
+//		messageDAO.calculateTrajectorySize();
 		messageDAO.finish();
 	}
 

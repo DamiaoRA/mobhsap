@@ -14,7 +14,7 @@ id|name                       |
 
 --TODO: criar um novo DW sem as colunas de histórico. Comparar com as consultas: tempo e memória 
 
---1- Para cada usuário qual a velocidade média viajando do domicílio para um supermercado?
+--1- Para cada usuário qual a velocidade média viajando do domicílio para um supermercaD	do?
 -- 193 usuários
 
 select SUM(f.distance)/SUM(f.duration) as speed, f.id_user 
@@ -28,6 +28,7 @@ group by f.id_user
 -- Professional & Other Places = Igreja
 -- rating = -1
 -- Resposta = 15.680857793683527 graus
+--Resposta = 4265.403038256964 km
 
 select SUM(f.total_distance)/count(distinct id_user)
 from fato f, tb_aspect asp, tb_poi poi
@@ -43,7 +44,8 @@ where f.id_aspect =asp.id
 
 --3 Qual foi a distância média percorrida por pessoas que usaram transporte público para visitar a Igreja do Rosário?
 --St Monica's Church = Igreja do Rosário
---Resposta = 0.3462758370785988
+--Resposta = 0.3462758370785988 graus
+--Resposta = 97.07307157041234 km
 select SUM(f.total_distance)/count(distinct id_user)
 from fato f, tb_aspect asp, tb_poi poi
 where f.id_aspect =asp.id and f.id_poi = poi.id
@@ -62,7 +64,7 @@ where f.id_aspect = asp.id and f.id_poi = poi.id
 	and asp.value like 'Rain,%'
 	and poi.city = 'New York'
 group by f.num_trajectory
-having sum(f.distance)/sum(f.duration) > 0.006
+having sum(f.distance)/sum(f.duration) > 40
 
 
 --5 Quais são os usuários que viajaram com velocidade média superior a 40 km/h em tempos de chuva no estado de Nova Iorque?
@@ -73,11 +75,12 @@ where f.id_aspect = asp.id and f.id_poi = poi.id
 	and asp.value like 'Rain,%'
 	and poi.state = 'New York'
 group by f.num_trajectory
-having sum(f.distance)/sum(f.duration) > 0.006
+having sum(f.distance)/sum(f.duration) > 40
 
 --6 Qual a distância total percorrida por todos os usuários na cidade de Nova Iorque durante o ano de 2022 e que tenham pelo menos uma parada em uma lanchonete?
 -- ano 2022 = ano 2012
 --Resposta = 1398.3587589340084 graus ~ 15.3819,463482741 km
+--Resposta = 393854.86159081856 km
 select sum(f.distance) as distance_ny
 from fato f, tb_poi poi, tb_time dimTime
 where f.id_poi = poi.id and dimtime.id = f.id_time 
@@ -96,7 +99,8 @@ where f.id_poi = poi.id and dimtime.id = f.id_time
 --order by f.num_trajectory, f."position" 
 
 --7 Qual a distância total percorrida por todos os usuários na cidade de Nova Iorque durante os semestres de 2022 e que tenham pelo menos uma parada no McDonalds?
--- Resposta = 221.24653608096062
+-- Resposta = 221.24653608096062 graus
+-- Resposta = 64825.4198234594 km
 select sum(f.distance) as distance_ny
 from fato f, tb_poi poi, tb_time dimTime
 where f.id_poi = poi.id and dimtime.id = f.id_time 

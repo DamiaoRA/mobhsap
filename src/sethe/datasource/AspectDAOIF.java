@@ -1,6 +1,6 @@
 package sethe.datasource;
 
-import java.sql.PreparedStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import sethe.model.Message;
@@ -17,9 +17,10 @@ public interface AspectDAOIF {
 	 * @param ps
 	 * @param parameterIndex
 	 * @param m
+	 * @return the aspect id
 	 * @throws SQLException 
 	 */
-	public abstract void putAspectsValues(PreparedStatement ps, int parameterIndex, Message m) throws SQLException;
+	public abstract int putAspectsValues(Connection con, Message m) throws SQLException;
 	
 	public abstract void finish() throws SQLException;
 }

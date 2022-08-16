@@ -2,6 +2,7 @@ package sethe.datasource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
@@ -14,75 +15,53 @@ import sethe.model.Message;
 public class MessageDAO {
 
 	private AspectDAOIF aspectDAO;
-	
-	private int idCategoryCounter = 1;
+
 	private int idPoiCounter = 1;
 	private int idTimeCounter = 1;
-	private int idTrajCounter = 1;
 	private int idUserCounter = 1;
-	
-	private int idTrajNow = 0;
-	private Map<Integer, Integer> mapPoiRepetition;
-	private int numPois = 0;
 
-	protected PreparedStatement psCategoryInsert;
-	protected PreparedStatement psCategorySearch;
-	protected PreparedStatement psPoiInsert;
-	protected PreparedStatement psPoiSearch;
-	protected PreparedStatement psUserInsert;
-	protected PreparedStatement psUserSearch;
-
-	protected PreparedStatement psTrajectorySearch;
-	protected PreparedStatement psTrajectoryInsert;
-
-	protected PreparedStatement psTimeInsert;
-	protected PreparedStatement psTimeSearch;
-	
-	protected PreparedStatement psPoiPosition;
-	protected PreparedStatement psPoiRepetition;
-
-	protected PreparedStatement psPoiCategoryInsert;
-
-	private PreparedStatement psFato;
-
+	private Map<String, StatusTrajectory> mapTraj;
 	private Map<String, Integer> mapId = new HashMap<String, Integer>();
+
+	protected PreparedStatement psPoiInsert;
+	protected PreparedStatement psUserInsert;
+	protected PreparedStatement psTimeInsert;
+	private PreparedStatement psFato;
+	private PreparedStatement psCalcDistance;
 
 	protected Connection conn;
 	private static MessageDAO singleton;
 
 	private MessageDAO() {
-		mapPoiRepetition = new HashMap<Integer, Integer>();
+		mapTraj = new HashMap<String, StatusTrajectory>();
 	}
 
 	private void start() throws SQLException {
 		conn = HikariCPDataSource.getConnection();
 
-		psCategoryInsert = conn.prepareStatement("INSERT INTO tb_category(id, name) VALUES (?,?)");
-		psCategorySearch = conn.prepareStatement("SELECT id FROM tb_category WHERE name = ?");
+		psPoiInsert = conn.prepareStatement("INSERT INTO tb_poi(id, x, y, name, category, city, state, country) VALUES (?,?,?,?,?,?,?,?)");
+		psUserInsert = conn.prepareStatement("INSERT INTO tb_user (id, name) VALUES (?, ?)");
+		psTimeInsert = conn.prepareStatement("INSERT INTO tb_time (id, second, minute, hour, day, month, semester, year, datetime) VALUES (?,?,?,?,?,?,?,?,?)");
 
-		psPoiInsert = conn.prepareStatement("INSERT INTO tb_poi(id, x, y, name) VALUES (?,?,?,?)");
-		psPoiSearch = conn.prepareStatement("SELECT id FROM tb_poi WHERE name = ?");
+		String stDist = "postgis.ST_DISTANCE(" + 
+				"			postgis.ST_Transform(?::postgis.geometry, 3857)," + 
+				"			postgis.ST_Transform(?::postgis.geometry, 3857)" + 
+				"		) / 1000";
+		psCalcDistance = conn.prepareStatement("select " + stDist);
 
-		psPoiCategoryInsert = conn.prepareStatement("INSERT INTO tb_poi_category(id_poi, id_category) VALUES(?,?)");
-
-		psUserInsert = conn.prepareStatement("INSERT INTO tb_user (id, value) VALUES (?, ?)");
-		psUserSearch = conn.prepareStatement("SELECT id FROM tb_user WHERE id=?");
-
-		psTrajectoryInsert = conn.prepareStatement("INSERT INTO tb_trajectory (id, id_user, value) VALUES(?, ?, ?)");
-		psTrajectorySearch = conn.prepareStatement("SELECT id FROM tb_trajectory WHERE id=?");
-
-		psTimeInsert = conn.prepareStatement("INSERT INTO tb_time (id, minute, hour, day, month, year) VALUES (?,?,?,?,?,?)");
-		psTimeSearch = conn.prepareStatement("SELECT id FROM tb_time WHERE minute=? AND hour=? AND day=? AND month=? AND year=?");
-
-		psPoiPosition = conn.prepareStatement("SELECT count(*) FROM fato WHERE id_trajectory = ?");
-		psPoiRepetition = conn.prepareStatement("SELECT count(*) FROM fato WHERE id_trajectory = ? AND id_poi = ?");
-	}
+		String columns = "id_poi, id_user, id_aspect, id_time, num_trajectory, distance, total_distance, duration, "
+				   + "total_duration, historic_poi, historic_category, position";
+		String values = "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?";
+		String sql = "INSERT INTO fato (" + columns + ") VALUES(" + values + ") ";
 	
+		psFato = conn.prepareStatement(sql);
+	}
+
 	public void finish() throws SQLException {
 		try {
 			Statement st = conn.createStatement();
-			st.execute("ALTER SEQUENCE tb_category_id_seq RESTART WITH " + idCategoryCounter);
 			st.execute("ALTER SEQUENCE tb_poi_id_seq RESTART WITH " + idPoiCounter);
+			st.execute("ALTER SEQUENCE tb_user_id_seq RESTART WITH " + idUserCounter);
 			st.execute("ALTER SEQUENCE tb_time_id_seq RESTART WITH " + idTimeCounter);
 			aspectDAO.finish();
 		} finally {
@@ -102,88 +81,26 @@ public class MessageDAO {
 		aspectDAO = dao;
 	}
 
-	private void createFactPreparedStatement() throws SQLException {
-		String aspectsName = "";
-		String valuesInter = "";
-		if(aspectDAO != null) {
-			for(String s : aspectDAO.columnsAspectsId()) {
-				aspectsName += "," + s;
-				valuesInter += ",?";
-			}
-		}
-
-		String sql = "INSERT INTO fato (id_poi, id_category, id_trajectory, id_time, position, repetition" + aspectsName + ") "
-				+ "VALUES(?,?,?,?,?,? " + valuesInter + ") ";
-
-		psFato = conn.prepareStatement(sql);
-	}
-
-//	public Integer insertCategory(Message m) throws SQLException {
-//		Integer id = mapId.get("cat_" + m.getCategory());
-//		if(id == null) {
-//			id = idCategoryCounter++;
-//
-//			psCategoryInsert.setInt(1, id);
-//			psCategoryInsert.setString(2, m.getCategory());
-//			psCategoryInsert.execute();
-//
-//			mapId.put("cat_" + m.getCategory(), id);
-//			return id;
-//		}
-//
-//		return id;
-//	}
-
-//	public Integer insertPoiHierarchy(Message m) throws SQLException {
-//		Integer idCat = insertCategory(m);
-//		Integer idPoi = mapId.get("poi_" + m.getPoi());
-//
-//		if(idPoi == null) {
-//			idPoi = idPoiCounter++;
-//			psPoiInsert.setInt(1, idPoi);
-//			psPoiInsert.setDouble(2, m.getX());
-//			psPoiInsert.setDouble(3, m.getY());
-//			psPoiInsert.setString(4, m.getPoi());
-//			psPoiInsert.execute();
-//
-//			psPoiCategoryInsert.setInt(1, idPoi);
-//			psPoiCategoryInsert.setInt(2, idCat);
-//			psPoiCategoryInsert.execute();
-//
-//			mapId.put("poi_" + m.getPoi(), idPoi);
-//		}
-//		return idPoi;
-//	}
-	
-	public Integer insertPoi(String poi, Message m) throws SQLException {
-		Integer idPoi = mapId.get("poi_" + poi);
+	public Integer insertPoiDimension(Message m) throws SQLException {
+		Integer idPoi = mapId.get("poi_" + m.poiToString());
 		if(idPoi == null) {
 			idPoi = idPoiCounter++;
 			psPoiInsert.setInt(1, idPoi);
 			psPoiInsert.setDouble(2, m.getX());
 			psPoiInsert.setDouble(3, m.getY());
-			psPoiInsert.setString(4, poi);
+			psPoiInsert.setString(4, m.getOnePoi());
+			psPoiInsert.setString(5, m.getOneCategory());
+			psPoiInsert.setString(6, m.getCity());
+			psPoiInsert.setString(7, m.getState());
+			psPoiInsert.setString(8, m.getCountry());
 			psPoiInsert.execute();
 
-			mapId.put("poi_" + poi, idPoi);
+			mapId.put("poi_" + m.poiToString(), idPoi);
 		}
 		return idPoi;
 	}
 
-	public Integer insertCategory(String cat) throws SQLException {
-		Integer idCat = mapId.get("cat_" + cat);
-		if(idCat == null) {
-			idCat = idCategoryCounter++;
-			psCategoryInsert.setInt(1, idCat);
-			psCategoryInsert.setString(2, cat);
-			psCategoryInsert.execute();
-
-			mapId.put("cat_" + cat, idCat);
-		}
-		return idCat;
-	}
-
-	private Integer insertUser(Message m) throws SQLException {
+	private Integer insertUserDimension(Message m) throws SQLException {
 		Integer idUser = mapId.get("user_" + m.getUserName());
 		if(idUser == null) {
 			idUser = idUserCounter++;
@@ -196,41 +113,29 @@ public class MessageDAO {
 		return idUser;
 	}
 
-	private Integer insertTrajectoryHierarchy(Message m) throws SQLException {
-		Integer idUser = insertUser(m);
-		Integer idTraj = mapId.get("traj_" + m.getTrajectoryName());
-
-		if(idTraj == null) {
-			idTraj = idTrajCounter++;
-			psTrajectoryInsert.setInt(1, idTraj);
-			psTrajectoryInsert.setInt(2, idUser);
-			psTrajectoryInsert.setString(3, m.getTrajectoryName());
-			psTrajectoryInsert.execute();
-
-			mapId.put("traj_" + m.getTrajectoryName(), idTraj);
-		}
-		return idTraj;
-	}
-
-
-	private Integer insertTimeHierarchy(Message m) throws SQLException {
+	private Integer insertTimeDimension(Message m) throws SQLException {
 		Timestamp ts = m.getDatetime();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(ts);
 
 		Integer idTime = searchTimeId(calendar);
 		if(idTime == null) {
+			int semester = calendar.get(Calendar.MONTH) < Calendar.JULY ? 1 : 2;
 			idTime = idTimeCounter++;
 			psTimeInsert.setInt(1, idTime);
-			psTimeInsert.setInt(2, calendar.get(Calendar.MINUTE));
-			psTimeInsert.setInt(3, calendar.get(Calendar.HOUR_OF_DAY));
-			psTimeInsert.setInt(4, calendar.get(Calendar.DATE));
-			psTimeInsert.setInt(5, calendar.get(Calendar.MONTH));
-			psTimeInsert.setInt(6, calendar.get(Calendar.YEAR));
+			psTimeInsert.setInt(2, calendar.get(Calendar.SECOND));
+			psTimeInsert.setInt(3, calendar.get(Calendar.MINUTE));
+			psTimeInsert.setInt(4, calendar.get(Calendar.HOUR_OF_DAY));
+			psTimeInsert.setInt(5, calendar.get(Calendar.DATE));
+			psTimeInsert.setInt(6, calendar.get(Calendar.MONTH));
+			psTimeInsert.setInt(7, semester);
+			psTimeInsert.setInt(8, calendar.get(Calendar.YEAR));
+			psTimeInsert.setTimestamp(9, ts);
 
 			psTimeInsert.execute();
 
-			mapId.put("time_" 
+			mapId.put("time_"
+					+ calendar.get(Calendar.SECOND)
 					+ calendar.get(Calendar.MINUTE)
 					+ calendar.get(Calendar.HOUR_OF_DAY)
 					+ calendar.get(Calendar.DATE)
@@ -241,7 +146,8 @@ public class MessageDAO {
 	}
 
 	private Integer searchTimeId(Calendar calendar) throws SQLException {
-		Integer idTime = mapId.get("time_" 
+		Integer idTime = mapId.get("time_"
+						+ calendar.get(Calendar.SECOND)
 						+ calendar.get(Calendar.MINUTE)
 						+ calendar.get(Calendar.HOUR_OF_DAY)
 						+ calendar.get(Calendar.DATE)
@@ -250,91 +156,170 @@ public class MessageDAO {
 		return idTime;
 	}
 
-	private int searchPoiPosition(int idTraj) throws SQLException {
-		if(idTrajNow != idTraj) {
-			idTrajNow = idTraj;
-			numPois = 0;
-			mapPoiRepetition = new HashMap<Integer, Integer>();
-		}
-		return ++numPois;
-
-//		select count(*) from fato where id_trajectory = 1
-//		psPoiPosition.setInt(1, idTraj);
-//		ResultSet rs = psPoiPosition.executeQuery();
-//		if(rs.next()) {
-//			return rs.getInt(1);
-//		}
-//		return 0;
-	}
-
-	private int searchPoiRepetition(int idTraj, Integer idPoi) throws SQLException {
-		if(idTrajNow != idTraj) {
-			idTrajNow = idTraj;
-			numPois = 0;
-			mapPoiRepetition = new HashMap<Integer, Integer>();
-		}
-
-		Integer rep = mapPoiRepetition.get(idPoi);
-		if(rep == null) {
-			rep = 0;
-		}
-		rep++;
-		mapPoiRepetition.put(idPoi, rep);
-		return rep;
-
-//		select count(*) from fato where id_trajectory = 1 and id_poi = 2
-//		psPoiRepetition.setInt(1, idTraj);
-//		psPoiRepetition.setInt(2, idPoi);
-//		ResultSet rs = psPoiRepetition.executeQuery();
-//		if(rs.next()) {
-//			return rs.getInt(1);
-//		}
-//		return 0;
-	}
-
 	/**
 	 * Create a Fact register
 	 * @param m
 	 * @throws SQLException
 	 */
 	public void insertFato(Message m) throws SQLException {
-		int poiPosition = 0;
-		int poiRepetition = 0;
+		//for(String poi : m.getPois()) { //TODO For while, there is only one PoI per category
 
-		for(String poi : m.getPois()) {
-			for(String cat : m.getCategories()) {
-				if(psFato == null)
-					createFactPreparedStatement();
+			Integer idUser = insertUserDimension(m);
+			Integer idTime = insertTimeDimension(m);
+			Integer idPoi = insertPoiDimension(m);
+			Integer idAspect = aspectDAO.putAspectsValues(conn, m);
 
-				Integer idPoi = insertPoi(poi, m);
-				Integer idCat = insertCategory(cat);
-				Integer idTraj = insertTrajectoryHierarchy(m);
-				Integer idTime = insertTimeHierarchy(m);
+			psFato.setInt(1, idPoi);
+			psFato.setInt(2, idUser);
+			psFato.setInt(3, idAspect);
+			psFato.setInt(4, idTime);
+			psFato.setString(5, m.getTrajectoryNumber());
 
-				psFato.setInt(1, idPoi);
-				psFato.setInt(2, idCat);
-				psFato.setInt(3, idTraj);
-				psFato.setInt(4, idTime);
+			calcMedidas(m);
 
-				if(poiPosition == 0)
-					poiPosition = searchPoiPosition(idTraj);
-				poiRepetition = searchPoiRepetition(idTraj, idPoi);
+			psFato.execute();
+		//}
+	}
 
-				psFato.setInt(5, poiPosition);
-				psFato.setInt(6, poiRepetition);
+	private void calcMedidas(Message m) throws SQLException {
+		StatusTrajectory status = mapTraj.get(m.getTrajectoryNumber());
+//		double distance = 0;
+//		double totalDistance = 0;
+//		double duration = 0;
+//		double totalDuration = 0;
+//		String historicPoi = m.getOnePoi();
+//		String historicCat = m.getOneCategory();
+//		int position = 1;
 
-				aspectDAO.putAspectsValues(psFato, 7, m);
-				psFato.execute();
-			}
+		if(status == null) {
+			status = new StatusTrajectory(m);
+			mapTraj.put(m.getTrajectoryNumber(), status);
+		} else {
+//			distance = status.calcDistance(m);
+//			duration = status.calcDuration(m);
+//			totalDuration = status.calcTotalDuration(m);
+
+			status.newLastPoi(m, psCalcDistance);
+//
+//			distance = status.totalDistance;
+//			totalDistance = status.totalDistance;
+//			historicPoi = status.historicPois;
+//			historicCat = status.historicCat;
+//			position = status.numPoi;
 		}
+
+		psFato.setDouble(6, status.distance);
+		psFato.setDouble(7, status.totalDistance);
+		psFato.setDouble(8, status.duration);
+		psFato.setDouble(9, status.totalDuration);
+		psFato.setString(10, status.historicPois);
+		psFato.setString(11, status.historicCat);
+		psFato.setInt(12, status.position);
+	}
+}
+
+class StatusTrajectory {
+	double distance = 0;
+	double totalDistance = 0;
+	double duration = 0;
+	double totalDuration = 0;
+	String historicPois;
+	String historicCat;
+	int position = 1;
+	String numTrajectory;
+
+	Message firstpoint;
+	Message lastpoint;
+
+	StatusTrajectory(Message m) {
+		firstpoint = m;
+		lastpoint  = m;
+
+		distance = 0;
+		totalDistance = 0;
+		duration = 0;
+		totalDuration = 0;
+		historicPois = m.getOnePoi();
+		historicCat = m.getOneCategory();
+		position = 1;
+		numTrajectory = m.getTrajectoryNumber();
 	}
 
-	public void calculateTrajectorySize() throws SQLException {
-		String sql = "UPDATE tb_trajectory set size = ("
-				   + "SELECT max(position) "
-				   + "FROM fato "
-				   + "WHERE fato.id_trajectory = tb_trajectory.id)";
+	public void newLastPoi(Message m, PreparedStatement ps) throws SQLException {
+		historicPois += "," + m.getOnePoi();
+		historicCat += "," + m.getOneCategory();
+		distance = calcDistance(m, ps);
+		totalDistance += distance;
+		duration = calcDuration(m);
+		totalDuration = calcTotalDuration(m);
 
-		conn.createStatement().executeLargeUpdate(sql);		
+		position++;
+
+		lastpoint = m;
 	}
+
+	/**
+	 * Duration in minutes
+	 * @param m
+	 * @return
+	 */
+	public double calcDuration(Message m) {
+//		long diffMilli = Math.abs(lastpoint.getDatetime().getTime() - m.getDatetime().getTime());
+//		long diff = TimeUnit.SECONDS.convert(diffMilli, TimeUnit.MILLISECONDS);
+//
+//		return diff;
+
+		double diffMilli = Math.abs(lastpoint.getDatetime().getTime() - m.getDatetime().getTime());
+		double hours = (diffMilli/1000)/60/60;
+		return hours;
+	}
+
+	/**
+	 * Duration in minutes
+	 * @param m
+	 * @return
+	 */
+	public double calcTotalDuration(Message m) {
+		double diffMilli = Math.abs(firstpoint.getDatetime().getTime() - m.getDatetime().getTime());
+		double hours = (diffMilli/1000)/60/60;
+		return hours;
+	}
+
+	public double calcDistance(Message m, PreparedStatement psCalcDistance) throws SQLException {
+//		String stDist = "ST_DISTANCE(" + 
+//				"			ST_Transform('SRID=4326;POINT (" + m.getX() + " " + m.getY() + ")'::geometry, 3857)," + 
+//				"			ST_Transform('SRID=4326;POINT (" + lastpoint.getX() + " " + lastpoint.getY() + ")'::geometry, 3857)" + 
+//				"		) / 1000";
+
+		String p1 = "SRID=4326;POINT (" + m.getX() + " " + m.getY() + ")";
+		String p2 = "SRID=4326;POINT (" + lastpoint.getX() + " " + lastpoint.getY() + ")";
+
+		psCalcDistance.setString(1, p1);
+		psCalcDistance.setString(2, p2);
+
+		ResultSet rs = psCalcDistance.executeQuery();
+		rs.next();
+		Double value = rs.getDouble(1); 
+		return value;
+
+//		double distance = Math.sqrt(
+//				Math.pow((m.getX() - lastpoint.getX()), 2) + 
+//				Math.pow((m.getY() - lastpoint.getY()), 2)
+//				);
+//
+//		return distance;
+	}
+
+
+//	public double calcTotalDistance(Message m) {
+//		totalDistance += calcDistance(m);
+//		return totalDistance;
+//
+////		double distance = Math.sqrt(
+////				Math.pow((m.getX() - firstpoint.getX()), 2) + 
+////				Math.pow((m.getY() - firstpoint.getY()), 2)
+////				);
+////
+////		return distance;
+//	}
 }

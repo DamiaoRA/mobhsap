@@ -16,7 +16,7 @@ import sethe.tripbuilder.TripBuilderInput;
 public class Main_ETL {
 	public static void main(String[] args) throws Exception {
 		long t1 = System.currentTimeMillis();
-		
+
 		ETL etl = new ETL();
 		etl.setInput(new FoursquareInput());
 		etl.setAspectDAO(new FoursquareAspectDAO());

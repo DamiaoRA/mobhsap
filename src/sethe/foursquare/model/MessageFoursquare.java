@@ -6,7 +6,6 @@ public class MessageFoursquare extends Message {
 	private String weather;
 	private double rating;
 	private double price;
-	private String day;
 
 	public String getWeather() {
 		return weather;
@@ -32,16 +31,18 @@ public class MessageFoursquare extends Message {
 		this.price = price;
 	}
 
-	public String getDay() {
-		return day;
-	}
-
-	public void setDay(String day) {
-		this.day = day;
+	@Override
+	public String toString() {
+		return getAspectsToString();
 	}
 
 	@Override
-	public String toString() {
-		return super.toString() + "\n" + price + "\n";
+	public String getAspectsToString() {
+		return weather + "," + rating + "," + price;
+	}
+
+	@Override
+	public String getAspectType() {
+		return "weather,rating,price";
 	}
 }

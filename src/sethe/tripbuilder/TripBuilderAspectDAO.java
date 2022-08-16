@@ -9,7 +9,6 @@ import java.util.Map;
 
 import sethe.datasource.AspectDAOIF;
 import sethe.model.Message;
-import sethe.tripbuilder.model.MessageTripbuilder;
 
 public class TripBuilderAspectDAO implements AspectDAOIF {
 	private String[] columns = {"id_transport_mean"};
@@ -53,16 +52,22 @@ public class TripBuilderAspectDAO implements AspectDAOIF {
 		return id;
 	}
 
+//	@Override
+//	public void putAspectsValues(PreparedStatement ps, int parameterIndex, Message m) throws SQLException {
+//		if(conn == null) {
+//			start(ps.getConnection());
+//		}
+//
+//		MessageTripbuilder mt = (MessageTripbuilder)m;
+//
+//		int idTm = insertTransportMean(mt.getTransportMeans());
+//
+//		ps.setInt(parameterIndex++, idTm);
+//	}
+
 	@Override
-	public void putAspectsValues(PreparedStatement ps, int parameterIndex, Message m) throws SQLException {
-		if(conn == null) {
-			start(ps.getConnection());
-		}
-
-		MessageTripbuilder mt = (MessageTripbuilder)m;
-
-		int idTm = insertTransportMean(mt.getTransportMeans());
-
-		ps.setInt(parameterIndex++, idTm);
+	public int putAspectsValues(Connection con, Message m) throws SQLException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

@@ -28,8 +28,8 @@ public class FoursquareInput implements InputMessageIF{
 		String sql = 
 				"SELECT anonymized_user_id, tid, lat, lon, "
 						+ "date_time, day, poi_name, poi_category, "
-						+ "price, rating, weather "
-						+ "FROM data_checkin "
+						+ "price, rating, weather, city, state, country "
+						+ "FROM data_checkin_geom "
 						+ "ORDER BY anonymized_user_id, tid, date_time";
 
 		conn = ds.getConnection();
@@ -42,7 +42,7 @@ public class FoursquareInput implements InputMessageIF{
 		if(rs.next()) {
 			m = new MessageFoursquare();
 			m.setUserName(rs.getInt("anonymized_user_id")+"");
-			m.setTrajectoryName(rs.getInt("tid")+"");
+			m.setTrajectoryNumber(rs.getInt("tid")+"");
 			m.setX(rs.getDouble("lat"));
 			m.setY(rs.getDouble("lon"));
 			m.setDatetime(rs.getTimestamp("date_time"));
@@ -58,6 +58,10 @@ public class FoursquareInput implements InputMessageIF{
 			m.setPrice(rs.getDouble("price"));
 			m.setRating(rs.getDouble("rating"));
 			m.setWeather(rs.getString("weather"));
+
+			m.setCity(rs.getString("city"));
+			m.setState(rs.getString("state"));
+			m.setCountry(rs.getString("country"));
 		}
 		return m;
 	}
