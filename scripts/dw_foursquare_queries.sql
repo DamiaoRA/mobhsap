@@ -66,14 +66,14 @@ having sum(f.distance)/sum(f.duration) > 0.006
 
 
 --5 Quais são os usuários que viajaram com velocidade média superior a 40 km/h em tempos de chuva no estado de Nova Iorque?
-select f.num_trajectory, sum(f.distance)/sum(f.duration) 
-from fato f, tb_aspect asp, tb_poi poi
-where f.id_aspect = asp.id and f.id_poi = poi.id
-	and f."position" > 1
-	and asp.value like 'Rain,%'
-	and poi.state = 'New York'
-group by f.num_trajectory
-having sum(f.distance)/sum(f.duration) > 0.006
+--select f.num_trajectory, sum(f.distance)/sum(f.duration) 
+--from fato f, tb_aspect asp, tb_poi poi
+--where f.id_aspect = asp.id and f.id_poi = poi.id
+--	and f."position" > 1
+--	and asp.value like 'Rain,%'
+--	and poi.state = 'New York'
+--group by f.num_trajectory
+--having sum(f.distance)/sum(f.duration) > 0.006
 
 --6 Qual a distância total percorrida por todos os usuários na cidade de Nova Iorque durante o ano de 2022 e que tenham pelo menos uma parada em uma lanchonete?
 -- ano 2022 = ano 2012

@@ -246,7 +246,7 @@ class StatusTrajectory {
 	}
 
 	public void newLastPoi(Message m, PreparedStatement ps) throws SQLException {
-		historicPois += "," + m.getOnePoi();
+		historicPois += "~" + m.getOnePoi();
 		historicCat += "," + m.getOneCategory();
 		distance = calcDistance(m, ps);
 		totalDistance += distance;

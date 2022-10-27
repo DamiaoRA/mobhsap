@@ -19,13 +19,11 @@ public class MessageTripbuilder extends Message {
 
 	@Override
 	public String getAspectsToString() {
-		// TODO Auto-generated method stub
-		return null;
+		return transportMeans;
 	}
 
 	@Override
 	public String getAspectType() {
-		// TODO Auto-generated method stub
-		return null;
+		return "transportMeans";
 	}
 }

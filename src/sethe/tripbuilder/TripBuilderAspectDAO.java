@@ -14,12 +14,10 @@ public class TripBuilderAspectDAO implements AspectDAOIF {
 	private String[] columns = {"id_transport_mean"};
 	
 	private Connection conn;
-
-	private int idTmCounter = 1;
-
+	private int idAspect = 1;
 	private Map<String, Integer> mapId = new HashMap<String, Integer>();
 
-	private PreparedStatement psTmInsert;
+	private PreparedStatement ps;
 
 	@Override
 	public String[] columnsAspectsId() {
@@ -28,46 +26,34 @@ public class TripBuilderAspectDAO implements AspectDAOIF {
 
 	private void start(Connection conn) throws SQLException {
 		this.conn = conn;
-		psTmInsert = conn.prepareStatement("INSERT INTO tb_transport_mean(id, value) VALUES (?,?)");
+		ps = conn.prepareStatement("INSERT INTO tb_aspect(id, value, type) VALUES (?,?,?)");
 	}
 
 	@Override
 	public void finish() throws SQLException {
 		Statement st = conn.createStatement();
-		st.execute("ALTER SEQUENCE tb_tm_id_seq RESTART WITH " + idTmCounter);
+		st.execute("ALTER SEQUENCE tb_asp_id_seq RESTART WITH " + idAspect);
 	}
 
-	private int insertTransportMean(String tm) throws SQLException {
-		Integer id = mapId.get("tm_" + tm);
+	@Override
+	public int putAspectsValues(Connection conn, Message m) throws SQLException {
+		if(ps == null) {
+			start(conn);
+		}
 
+		Integer id = mapId.get(m.getAspectsToString());
 		if(id == null) {
-			id = idTmCounter++;
-			psTmInsert.setInt(1, id);
-			psTmInsert.setString(2, tm);
-			psTmInsert.execute();
+			id = idAspect++;
+			String value = m.getAspectsToString();
+			String type = m.getAspectType();
+			ps.setInt(1, id);
+			ps.setString(2, value);
+			ps.setString(3, type);
+			ps.execute();
 
-			mapId.put("tm_" + tm, id);
+			mapId.put(value, id);
 		}
 
 		return id;
-	}
-
-//	@Override
-//	public void putAspectsValues(PreparedStatement ps, int parameterIndex, Message m) throws SQLException {
-//		if(conn == null) {
-//			start(ps.getConnection());
-//		}
-//
-//		MessageTripbuilder mt = (MessageTripbuilder)m;
-//
-//		int idTm = insertTransportMean(mt.getTransportMeans());
-//
-//		ps.setInt(parameterIndex++, idTm);
-//	}
-
-	@Override
-	public int putAspectsValues(Connection con, Message m) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }

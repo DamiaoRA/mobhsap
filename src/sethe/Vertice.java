@@ -8,10 +8,13 @@ import java.util.List;
 public class Vertice {
 	private Expression expression;
 	private PoI poi;
+
 	private List<Vertice> children;
+	private List<Vertice> fathers;
 
 	public Vertice() {
 		this.children = new ArrayList<Vertice>();
+		this.fathers = new ArrayList<Vertice>();
 	}
 
 	public Expression getExpression() {
@@ -24,6 +27,14 @@ public class Vertice {
 
 	public List<Vertice> getChildren() {
 		return children;
+	}
+
+	public List<Vertice> getFathers() {
+		return fathers;
+	}
+
+	public void addFather(Vertice f) {
+		fathers.add(f);
 	}
 
 	public void createVertice(Expression e, PoI poiChild) {
@@ -39,6 +50,7 @@ public class Vertice {
 			Vertice v = new Vertice();
 			v.setExpression(e);
 			v.setPoi(poiChild);
+			v.addFather(this);
 			children.add(v);
 		} else {
 			for(Vertice v : children) {
