@@ -51,4 +51,6 @@ mobhsap.foursquare.search.test.NewQueriesFoursquareMain
 ```
 
 # Run Foursquare analytic query test
+```sh
 mvn compile exec:java -Dexec.mainClass="mobhsap.foursquare.analytics.test.QueryATrDWMainTest"
+```
