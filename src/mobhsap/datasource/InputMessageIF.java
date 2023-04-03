@@ -1,6 +1,6 @@
-package sethe.datasource;
+package mobhsap.datasource;
 
-import sethe.model.Message;
+import mobhsap.model.Message;
 
 public interface InputMessageIF {
 

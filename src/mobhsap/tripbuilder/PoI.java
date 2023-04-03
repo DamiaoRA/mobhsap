@@ -1,4 +1,4 @@
-package sethe.tripbuilder;
+package mobhsap.tripbuilder;
 
 import java.util.ArrayList;
 import java.util.List;

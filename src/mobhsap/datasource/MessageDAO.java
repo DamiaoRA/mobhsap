@@ -1,4 +1,4 @@
-package sethe.datasource;
+package mobhsap.datasource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import sethe.model.Message;
+import mobhsap.model.Message;
 
 public class MessageDAO {
 

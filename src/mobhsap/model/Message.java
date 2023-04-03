@@ -1,4 +1,4 @@
-package sethe.model;
+package mobhsap.model;
 
 import java.sql.Timestamp;
 import java.util.Set;
@@ -121,4 +121,30 @@ public abstract class Message {
 	public abstract String getAspectsToString();
 	
 	public abstract String getAspectType();
+
+	public abstract String[] getaspectsType();
+	
+	public String getPoisName() {
+		String result = "";
+		if(!pois.isEmpty()) {
+			for(String p : pois) {
+				result +=";" + p;
+			}
+			result = result.substring(1);
+		}
+		return result;
+	}
+
+	public String getCategoriesName() {
+		String result = "";
+		if(!pois.isEmpty()) {
+			for(String p : categories) {
+				result +=";" + p;
+			}
+			result = result.substring(1);
+		}
+		return result;
+	}
+
+	public abstract String getAspectValue(String asp);
 }

@@ -1,4 +1,4 @@
-package sethe.foursquare;
+package mobhsap.foursquare;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,8 +15,8 @@ import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
 
-import sethe.PoI;
-import sethe.Trajectory;
+import mobhsap.PoI;
+import mobhsap.Trajectory;
 
 /**
  * Converte o BD de trajetórias Foursquare no BD de textos

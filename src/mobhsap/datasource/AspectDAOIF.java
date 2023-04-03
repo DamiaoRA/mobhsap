@@ -1,9 +1,9 @@
-package sethe.datasource;
+package mobhsap.datasource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import sethe.model.Message;
+import mobhsap.model.Message;
 
 public interface AspectDAOIF {
 	/**

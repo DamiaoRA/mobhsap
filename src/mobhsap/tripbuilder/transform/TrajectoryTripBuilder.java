@@ -1,4 +1,4 @@
-package sethe.tripbuilder.transform;
+package mobhsap.tripbuilder.transform;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import sethe.tripbuilder.Move;
-import sethe.tripbuilder.PoI;
-import sethe.tripbuilder.Stop;
-import sethe.tripbuilder.Trajectory;
+import mobhsap.tripbuilder.Move;
+import mobhsap.tripbuilder.PoI;
+import mobhsap.tripbuilder.Stop;
+import mobhsap.tripbuilder.Trajectory;
 
 /**
  * ETL que transforma dados extraídos do tripbuilder em trajetórias textuais

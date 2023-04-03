@@ -1,4 +1,4 @@
-package sethe.tripbuilder;
+package mobhsap.tripbuilder;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import sethe.Query;
-import sethe.CompositeQuery;
-import sethe.Trajectory;
-import sethe.util.StringUtils;
+import mobhsap.CompositeQuery;
+import mobhsap.Query;
+import mobhsap.Trajectory;
+import mobhsap.util.StringUtils;
 
 /**
  * Consulta a trajetória com base nos PoI ou (categoria de PoI) e usa o contexto para ordenar os resultados

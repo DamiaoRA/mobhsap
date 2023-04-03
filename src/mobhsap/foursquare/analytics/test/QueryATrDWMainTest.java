@@ -1,4 +1,4 @@
-package sethe.tripbuilder.test;
+package mobhsap.foursquare.analytics.test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,24 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import mobhsap.util.TimeQ;
+
 public class QueryATrDWMainTest {
 
 	private static Connection con;
 	private static Statement st;
-	private static String schema = "dw";
+	private static String schema = "dw_foursquare";
 
 	public static void main(String[] args) throws SQLException {
 		try {
-			initConnection("localhost", "5432", "postgres", "lsi123");
+			initConnection("localhost", "5432", "postgres", "postgres");
 			List<TimeQ> times = new ArrayList<TimeQ>();
-			//TODO renomar as consultas
+
+			times.add(queryQ1());
 			times.add(queryQ2());
 			times.add(queryQ3());
 			times.add(queryQ4());
 			times.add(queryQ5());
 			times.add(queryQ6());
 			times.add(queryQ7());
-			times.add(queryQ1());
 			times.add(queryQ8());
 			times.add(queryQ9());
 			times.add(queryQ10());
@@ -54,22 +56,7 @@ public class QueryATrDWMainTest {
 
 	//--1- Para cada usuário qual a velocidade média viajando do domicílio para um supermercado?
 	//-- 193 usuários
-	private static TimeQ queryQ1() throws SQLException {
-//		String sql = "WITH stopResidence AS (" + 
-//				"  select num_trajectory, f.position, f.id_user" + 
-//				"  from fato f, tb_poi dimPoi" + 
-//				"  where f.id_poi = dimPoi.id" + 
-//				"  		and dimPoi.category = 'Residence' " + 
-//				")" + 
-//				" select SUM(f.distance)/SUM(f.duration) as speed, f.id_user " + 
-//				" from fato f, tb_poi dimPoi, stopResidence r" + 
-//				" where f.id_poi = dimPoi.id " + 
-//				"	and dimPoi.category = 'Shop & Service'" + 
-//				"	and f.id_user = r.id_user" + 
-//				"	and f.num_trajectory = r.num_trajectory" + 
-//				"	and f.position = r.position+1" + 
-//				" group by f.id_user";
-		
+	private static TimeQ queryQ6() throws SQLException {
 		String sql = "WITH stopResidence AS ( " + 
 				"  select num_trajectory, f.position, f.id_user " + 
 				"  from fato f, tb_poi dimPoi " + 
@@ -100,7 +87,7 @@ public class QueryATrDWMainTest {
 	//--2 Qual foi a distância média percorrida por pessoas que usaram transporte público para visitar uma Igreja?
 	//-- College & University = Igreja
 	//--1194.267625456714 Km
-	private static TimeQ queryQ2() throws SQLException {
+	private static TimeQ queryQ1() throws SQLException {
 		long t1 = System.currentTimeMillis();
 		String sql = "WITH stopTransport AS (" + 
 				"  select f.num_trajectory, f.position, f.id_user" + 
@@ -132,7 +119,7 @@ public class QueryATrDWMainTest {
 //	--3 Qual foi a distância média percorrida por pessoas que usaram transporte público para visitar a Igreja do Rosário?
 //	--St Monica's Church = Igreja do Rosário
 //	--Resultado9.163915729043126 Km
-	private static TimeQ queryQ3() throws SQLException {
+	private static TimeQ queryQ2() throws SQLException {
 		long t1 = System.currentTimeMillis();
 
 		String sql = "WITH stopTransport AS (" + 
@@ -163,17 +150,8 @@ public class QueryATrDWMainTest {
 	}
 
 //	--4 Quais são as trajetórias onde a velocidade média é superior a 40 km/h em tempos de chuva na cidade de Nova Iorque?
-	private static TimeQ queryQ4() throws SQLException {
+	private static TimeQ queryQ3() throws SQLException {
 		long t1 = System.currentTimeMillis();
-
-//		String sql = "select f.num_trajectory, sum(f.distance)/sum(f.duration) " + 
-//				" from fato f, tb_aspect asp, tb_poi poi" + 
-//				" where f.id_aspect = asp.id and f.id_poi = poi.id" + 
-//				"	and f.\"position\" > 1" + 
-//				"	and asp.value like 'Rain,%'" + 
-//				"	and poi.city = 'New York'" + 
-//				" group by f.num_trajectory" + 
-//				" having sum(f.distance)/sum(f.duration) > 0.006";
 
 		String sql = "select count(distinct f.num_trajectory) " + 
 				"from fato f, tb_aspect asp, tb_poi poi " + 
@@ -197,17 +175,8 @@ public class QueryATrDWMainTest {
 	}
 	
 //	--5 Quais são os usuários que viajaram com velocidade média superior a 40 km/h em tempos de chuva no estado de Nova Iorque?
-	private static TimeQ queryQ5() throws SQLException {
+	private static TimeQ queryQ4() throws SQLException {
 		long t1 = System.currentTimeMillis();
-
-//		String sql = "select f.num_trajectory, sum(f.distance)/sum(f.duration) " + 
-//				" from fato f, tb_aspect asp, tb_poi poi" + 
-//				" where f.id_aspect = asp.id and f.id_poi = poi.id" + 
-//				"	and f.\"position\" > 1" + 
-//				"	and asp.value like 'Rain,%'" + 
-//				"	and poi.state = 'New York'" + 
-//				" group by f.num_trajectory" + 
-//				" having sum(f.distance)/sum(f.duration) > 40";//0.006";
 		
 		String sql = "select count(distinct f.id_user) " + 
 				"from fato f, tb_aspect asp, tb_poi poi " + 
@@ -232,7 +201,7 @@ public class QueryATrDWMainTest {
 
 //	--6 Qual a distância total percorrida por todos os usuários na cidade de Nova Iorque durante o ano de 2022 e que tenham pelo menos uma parada em uma lanchonete?
 //	--307695.7062324146 Km
-	private static TimeQ queryQ6() throws SQLException {
+	private static TimeQ queryQ5() throws SQLException {
 		long t1 = System.currentTimeMillis();
 
 		String sql = "WITH oneStop AS (" + 
@@ -432,6 +401,7 @@ public class QueryATrDWMainTest {
 				"  from fato f, tb_poi dimPoi" + 
 				"  where f.id_poi = dimPoi.id" + 
 				"		and dimPoi.category = 'Travel & Transport'" + 
+				//and\ dimPoi.name\ \mathtt{\sim}*\ '(subway)'
 				"  group by num_trajectory, f.id_user, f.position" + 
 				" )" + 
 				" select SUM(f.total_distance) " + 

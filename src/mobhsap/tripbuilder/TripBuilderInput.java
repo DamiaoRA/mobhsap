@@ -1,4 +1,4 @@
-package sethe.tripbuilder;
+package mobhsap.tripbuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,9 +12,9 @@ import java.util.Set;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import sethe.datasource.InputMessageIF;
-import sethe.model.Message;
-import sethe.tripbuilder.model.MessageTripbuilder;
+import mobhsap.datasource.InputMessageIF;
+import mobhsap.model.Message;
+import mobhsap.tripbuilder.model.MessageTripbuilder;
 
 public class TripBuilderInput implements InputMessageIF {
 

@@ -1,6 +1,7 @@
-package sethe.tripbuilder.model;
+package mobhsap.tripbuilder.model;
 
-import sethe.model.Message;
+import mobhsap.model.Message;
+import mobhsap.util.StringUtils;
 
 public class MessageTripbuilder extends Message {
 	private String transportMeans;
@@ -24,6 +25,19 @@ public class MessageTripbuilder extends Message {
 
 	@Override
 	public String getAspectType() {
-		return "transportMeans";
+		return "move";
+	}
+
+	@Override
+	public String[] getaspectsType() {
+		String [] a = {"move"};
+		return a;
+	}
+
+	@Override
+	public String getAspectValue(String asp) {
+		if(StringUtils.isEmpty(transportMeans))
+			return "N/A";
+		return transportMeans;
 	}
 }

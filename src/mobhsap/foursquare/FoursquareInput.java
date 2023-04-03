@@ -1,4 +1,4 @@
-package sethe.foursquare;
+package mobhsap.foursquare;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,9 +9,10 @@ import java.util.Set;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import sethe.datasource.InputMessageIF;
-import sethe.foursquare.model.MessageFoursquare;
-import sethe.model.Message;
+import mobhsap.datasource.InputMessageIF;
+import mobhsap.foursquare.model.MessageFoursquare;
+import mobhsap.model.Message;
+import mobhsap.util.StringUtils;
 
 public class FoursquareInput implements InputMessageIF{
 
@@ -48,16 +49,19 @@ public class FoursquareInput implements InputMessageIF{
 			m.setDatetime(rs.getTimestamp("date_time"));
 
 			Set<String> pois = new HashSet<String>();
-			pois.add(rs.getString("poi_name"));
+			String poiName = rs.getString("poi_name");
+			pois.add(StringUtils.sanitize(poiName));
 			m.setPois(pois);
 
 			Set<String> cats = new HashSet<String>();
-			cats.add(rs.getString("poi_category"));
+			String catName = rs.getString("poi_category");
+			cats.add(StringUtils.sanitize(catName));
 			m.setCategories(cats);
 
 			m.setPrice(rs.getDouble("price"));
 			m.setRating(rs.getDouble("rating"));
 			m.setWeather(rs.getString("weather"));
+			m.setDay(rs.getString("day"));
 
 			m.setCity(rs.getString("city"));
 			m.setState(rs.getString("state"));

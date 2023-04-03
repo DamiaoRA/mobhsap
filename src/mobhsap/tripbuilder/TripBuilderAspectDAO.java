@@ -1,4 +1,4 @@
-package sethe.tripbuilder;
+package mobhsap.tripbuilder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,8 +7,8 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import sethe.datasource.AspectDAOIF;
-import sethe.model.Message;
+import mobhsap.datasource.AspectDAOIF;
+import mobhsap.model.Message;
 
 public class TripBuilderAspectDAO implements AspectDAOIF {
 	private String[] columns = {"id_transport_mean"};

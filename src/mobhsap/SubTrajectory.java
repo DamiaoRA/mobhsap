@@ -1,7 +1,9 @@
-package sethe;
+package mobhsap;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mobhsap.util.Distance;
 
 public class SubTrajectory implements Comparable<SubTrajectory>{
 	private Trajectory trajectory;

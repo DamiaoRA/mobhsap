@@ -10,45 +10,16 @@
 --drop SEQUENCE tb_asp_id_seq;
 --
 
---CREATE SCHEMA dw;
-SET search_path TO dw;
+CREATE SCHEMA dw_tripbuilder;
+SET search_path TO dw_tripbuilder;
 
 /**
  * Script default
  */
---CREATE SEQUENCE tb_category_id_seq;
 CREATE SEQUENCE tb_poi_id_seq;
 CREATE SEQUENCE tb_time_id_seq;
 CREATE SEQUENCE tb_user_id_seq;
 CREATE SEQUENCE tb_asp_id_seq;
---CREATE SEQUENCE tb_city_id_seq;
---CREATE SEQUENCE tb_state_id_seq;
---CREATE SEQUENCE tb_country_id_seq;
-
---CREATE TABLE tb_country(
---	id int default nextval('tb_country_id_seq'),
---	name varchar(200),
---	CONSTRAINT pk_country PRIMARY KEY(id)
---);
---
---CREATE TABLE tb_state(
---	id int default nextval('tb_state_id_seq'),
---	name varchar(200),
---	CONSTRAINT pk_state PRIMARY KEY(id)
---);
---
---CREATE TABLE tb_city(
---	id int default nextval('tb_city_id_seq'),
---	name varchar(200),
---	CONSTRAINT pk_city PRIMARY KEY(id)
---);
-
---CREATE TABLE tb_category(
---	id int default nextval('tb_category_id_seq'),
---	name varchar(200),
---	CONSTRAINT pk_category PRIMARY KEY (id),
---	CONSTRAINT uc_category UNIQUE (name)
---);
 
 CREATE TABLE tb_poi(
 	id int default nextval('tb_poi_id_seq'),
@@ -63,17 +34,6 @@ CREATE TABLE tb_poi(
 	CONSTRAINT uc_poi UNIQUE (x,y,name, category, city, state, country)
 );
 
---CREATE TABLE tb_poi(
---	id int default nextval('tb_poi_id_seq'),
---	id_category int,
---	id_city int,
---	x float,
---	y float,
---	name varchar(200),
---	CONSTRAINT pk_poi PRIMARY KEY (id),
---	CONSTRAINT fk_category FOREIGN KEY (id_category) REFERENCES tb_category(id),
---	CONSTRAINT fk_city FOREIGN KEY (id_city) REFERENCES tb_city(id)
---);
 
 CREATE TABLE tb_time(
 	id int default nextval('tb_time_id_seq'),

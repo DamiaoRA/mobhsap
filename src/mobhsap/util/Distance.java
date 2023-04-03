@@ -1,8 +1,10 @@
-package sethe;
+package mobhsap.util;
 
 import java.lang.reflect.Method;
 
-import sethe.util.Constants;
+import mobhsap.model.AspectExpression;
+import mobhsap.model.Trajectory;
+import mobhsap.util.graph.Vertice;
 
 /**
  * Class encapsulates distance functions.
@@ -10,8 +12,46 @@ import sethe.util.Constants;
  */
 public class Distance {
 
+	public static Double distance(AspectExpression aspQuery, String aspectType, String function, 
+			Double limit, Double weight, Vertice p1, Vertice p2, Trajectory trajectory) {
+
+		//Proximity
+		if(Constants.isProximity(aspectType))
+			return proximity (p2.getFirstPosition(), p1.getLastPosition());
+
+		String idealValue = aspQuery.getValue();
+		String p2AspectValue = "";
+		double result = 0d;
+
+		if(idealValue.equals(Constants.ANY_VALUE))
+			return 1d;
+
+		if(aspQuery.isUntil()) { //Until
+			int pos1 = p1.getLastPosition();
+			int pos2 = p2.getFirstPosition();
+
+			Double value = 0d;
+			String tempAspectValue = "";
+			for(int i = pos1+1; i <= pos2; i++) {
+				tempAspectValue = trajectory.getAspectValuePoI(i, aspectType);
+				value += Distance.calc(function, tempAspectValue, idealValue, weight, limit);
+			}
+
+			result = value/((pos2-pos1));
+			return result;
+		//
+		} else {
+			p2AspectValue = p2.getAspects().get(aspectType);
+			idealValue = aspQuery.getValue();
+		}
+
+		result = Distance.calc(function, p2AspectValue, idealValue, weight, limit);
+		return result;
+	}
+	
+	/////
 	public static double calc(String distance, Object value, Object ideal,
-			double weight, double limit) {
+			Double weight, Double limit) {
 
 		if(ideal.equals(Constants.ANY_VALUE))
 			return weight;
@@ -43,8 +83,8 @@ public class Distance {
 			return 0; 
 	}
 
-	public static double proximity (int positionP2, int positionP1, Double weight) {
-		double result = 1/Math.abs(positionP2-positionP1);
+	public static double proximity (int positionP2, int positionP1) {
+		double result = 1d/Math.abs(positionP2-positionP1);
 		return result;
 	}
 

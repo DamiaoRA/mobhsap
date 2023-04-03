@@ -1,4 +1,4 @@
-package sethe.tripbuilder;
+package mobhsap.tripbuilder;
 
 public class Trajectory {
 		private String id;

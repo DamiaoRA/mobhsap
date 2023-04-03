@@ -1,4 +1,4 @@
-package sethe.foursquare;
+package mobhsap.foursquare;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,9 +17,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import sethe.Query;
-import sethe.PoI;
-import sethe.Trajectory;
+import mobhsap.PoI;
+import mobhsap.Query;
+import mobhsap.Trajectory;
 
 public class QueryTrajectory {
 //	private Connection con;

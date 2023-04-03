@@ -1,4 +1,4 @@
-package sethe.tripbuilder.transform;
+package mobhsap.tripbuilder.transform;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import sethe.tripbuilder.Trajectory;
+import mobhsap.tripbuilder.Trajectory;
 
 /**
  * Stores the trajectories with 1 point extracted from the RDF dataset. 

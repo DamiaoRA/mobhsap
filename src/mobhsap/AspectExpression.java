@@ -1,4 +1,4 @@
-package sethe;
+package mobhsap;
 
 /**
  * Class that represents the regular language expression of an aspect of the trajectory.

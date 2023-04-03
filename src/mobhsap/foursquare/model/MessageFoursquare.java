@@ -1,11 +1,20 @@
-package sethe.foursquare.model;
+package mobhsap.foursquare.model;
 
-import sethe.model.Message;
+import mobhsap.model.Message;
 
 public class MessageFoursquare extends Message {
 	private String weather;
 	private double rating;
 	private double price;
+	private String day;
+
+	public String getDay() {
+		return day;
+	}
+
+	public void setDay(String day) {
+		this.day = day;
+	}
 
 	public String getWeather() {
 		return weather;
@@ -38,11 +47,30 @@ public class MessageFoursquare extends Message {
 
 	@Override
 	public String getAspectsToString() {
-		return weather + "," + rating + "," + price;
+		return weather + "," + rating + "," + price+ "," + day;
 	}
 
 	@Override
 	public String getAspectType() {
-		return "weather,rating,price";
+		return "weather,rating,price,day";
+	}
+
+	@Override
+	public String[] getaspectsType() {
+		String a[] = {"weather","rating","price","day"};
+		return a;
+	}
+
+	@Override
+	public String getAspectValue(String asp) {
+		if(asp.equals("weather"))
+			return weather;
+		if(asp.equals("rating"))
+			return rating+"";
+		if(asp.equals("price"))
+			return price+"";
+		if(asp.equals("day"))
+			return day;
+		return null;
 	}
 }
