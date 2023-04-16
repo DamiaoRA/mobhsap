@@ -136,8 +136,6 @@ public class Trajectory implements Comparable<Trajectory>{
 	}
 
 	public void calcSubtrajectory() throws Exception {
-		if(id.equals("http://localhost:8080/resource/TP2522"))
-			System.out.println("Trajectory.calcSubtrajectory()");
 		for(Expression e : query.getArrayExp()) {
 			String text = textPoi;
 			if(e.isCategory()) {

@@ -47,7 +47,7 @@ public class TimeQ {
 
 	public String toString() {
 //		return queryName + ": " + count + " " + (t2-t1) + "ms";
-//		return (t2-t1) + "";
-		return (t2-t1) + " traj:" + count + " subseq:" + countSub;
+		return (t2-t1) + "";
+//		return (t2-t1) + " traj:" + count + " subseq:" + countSub;
 	}
 }

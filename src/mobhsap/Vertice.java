@@ -93,16 +93,28 @@ public class Vertice {
 	
 	@SuppressWarnings("unchecked")
 	public void listListPoIs(List<LinkedList<PoI>> ll, LinkedList<PoI> lk) {
-		for(Vertice v : children) {
+//		for(Vertice v : children) {
+//			if(children.size() > 1) {
+//				LinkedList<PoI> clone = (LinkedList<PoI>)(lk.clone());//uma nova lista para cada ramo da árvore
+//				clone.add(poi);
+//				v.listListPoIs(ll, clone);
+//			} else {
+//				lk.add(poi);
+//				v.listListPoIs(ll, lk);
+//			}
+//		}
+		
 			if(children.size() > 1) {
-				LinkedList<PoI> clone = (LinkedList<PoI>)(lk.clone());//uma nova lista para cada ramo da árvore
-				clone.add(poi);
-				v.listListPoIs(ll, clone);
-			} else {
+				for(Vertice v : children) {
+					LinkedList<PoI> clone = (LinkedList<PoI>)(lk.clone());//uma nova lista para cada ramo da árvore
+					clone.add(poi);
+					v.listListPoIs(ll, clone);
+				}
+			} else if(children.size() == 1) {
 				lk.add(poi);
+				Vertice v = children.get(0);
 				v.listListPoIs(ll, lk);
 			}
-		}
 
 		if(children.isEmpty()) {
 			lk.add(poi);

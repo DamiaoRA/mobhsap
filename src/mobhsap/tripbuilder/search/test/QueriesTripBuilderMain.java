@@ -55,9 +55,6 @@ public class QueriesTripBuilderMain {
       "museidipisa(;(\\w*))* ; ((\\w*);)*cappelledipisa"
     );
     prop.setProperty("q1_asp_proximity", ".* ; ~");
-//    prop.setProperty("weight_proximity", "1"); TODO dirar isso
-//    prop.setProperty("distance_proximity", "proportion");
-//    prop.setProperty("limit_proximity", "10");
 
     return queryQ(prop);
   }
@@ -113,40 +110,22 @@ public class QueriesTripBuilderMain {
   private static TimeQ queryQ6() throws Exception {
     Properties prop = new Properties();
 
-//    prop.setProperty(
-//      "q1_asp_cat",
-//      "museidipisa(;(\\w*))* ; ((cappelledipisa|chiesedipisa)(;(\\w*))*$)*"
-//    );
-
     prop.setProperty(
     	      "q1_asp_cat",
     	      "museidipisa(;(\\w*))* ; ((cappelledipisa|chiesedipisa)(;(\\w*))*$)?"
     );
-//    prop.setProperty("q1_cat_weight", "0.9 ; 0.1");
-//    prop.setProperty("q1_proximity", ".*			        ; .*");
 
     return queryQ(prop);
   }
 
   private static TimeQ queryQ7() throws Exception {
     Properties prop = new Properties();
-
-//    prop.setProperty(
-//      "q1_asp_cat",
-//      "^(((\\w*);)*(cappelledipisa)(;\\w*)* )(?=(((\\w*);)*)(cappelledipisa)) ; (cappelledipisa)$"
-//    );
     
     prop.setProperty(
     	      "q1_asp_cat",
     	      "^(((\\w*);)*(cappelledipisa)) ; (((\\w*);)*(cappelledipisa)(;(\\w*))*)* ; (((\\w*);)*(cappelledipisa))$"
     	    );
 	prop.setProperty("q1_proximity", " .*     ; ~      ; ~");
-
-//    prop.setProperty(
-//  	      "q1_asp_cat",
-//  	      "^(((\\w*);)*(cappelledipisa)) ; ((((\\w*);)*(cappelledipisa))+)$"
-//  	    );
-//	prop.setProperty("q1_proximity", " .*     ; ~   ");
 
     return queryQ(prop);
   }
@@ -188,12 +167,7 @@ public class QueriesTripBuilderMain {
 
   private static TimeQ queryQ10() throws Exception {
     Properties prop = new Properties();
-
-//    prop.setProperty(
-//      "q1_asp_cat",
-//      "^((\\w*);)*(torridipisa) ; \\w+(\\\\w*;*)* ;  ((\\w*);)*(chiesedipisa)(;(\\w*))* ; (palazzidipisa)(;(\\w*))*$"
-//    );
-    
+   
     prop.setProperty(
     	      "q1_asp_cat",
     	      "^((\\w*);)*(torridipisa) ; .+ ;  ((\\w*);)*(chiesedipisa)(;(\\w*))* ; (palazzidipisa)(;(\\w*))*$"
