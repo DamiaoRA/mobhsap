@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mobhsap.model.Message;
+import mobhsap.util.ComponentStatistics;
 
 public class MessageDAO {
 
@@ -161,9 +162,11 @@ public class MessageDAO {
 	 * @param m
 	 * @throws SQLException
 	 */
-	public void insertFato(Message m) throws SQLException {
+	public void insertFato(Message m) throws Exception {
 		//for(String poi : m.getPois()) { //TODO For while, there is only one PoI per category
-
+		
+		    Long t1 = System.currentTimeMillis();
+		
 			Integer idUser = insertUserDimension(m);
 			Integer idTime = insertTimeDimension(m);
 			Integer idPoi = insertPoiDimension(m);
@@ -177,7 +180,17 @@ public class MessageDAO {
 
 			calcMedidas(m);
 
+			Long t2 = System.currentTimeMillis();
+			t2 = System.currentTimeMillis();
+			ComponentStatistics.getInstance().setEtlTime(t2-t1); //statics etl
+
+
+			t1 = System.currentTimeMillis();
+
 			psFato.execute();
+
+			t2 = System.currentTimeMillis();
+			ComponentStatistics.getInstance().setDwManagerTime(t2-t1); //statics Dw manager
 		//}
 	}
 

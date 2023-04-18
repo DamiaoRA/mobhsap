@@ -26,7 +26,7 @@ public class Trajectory2Text {
 		}
 	}
 
-	public void nextMessage(Message m) throws SQLException {
+	public void nextMessage(Message m) throws Exception {
 		String trajId = m.getTrajectoryNumber();
 
 		insertAspValue(trajId, "poi", m.getPoisName());
@@ -36,25 +36,45 @@ public class Trajectory2Text {
 		}
 	}
 
-	private void insertAspValue(String trajId, String aspName, String aspValue) throws SQLException {
+	private void insertAspValue(String trajId, String aspName, String aspValue) throws Exception {
+		Long t1 = System.currentTimeMillis();
+		
 		String key = trajId + "_" + aspName;
 		String text = mapTrajectories.get(key);
 		if(text == null) {
 			text = aspValue;
 			insert(trajId, aspName, text);
+			
+			Long t2 = System.currentTimeMillis();
+			t2 = System.currentTimeMillis();
+			ComponentStatistics.getInstance().setTraj2TextTime(t2-t1); //statics traj2text
 		} else {
 			text += separator + aspValue;
 			update(trajId, aspName, text);
+			
+			Long t2 = System.currentTimeMillis();
+			t2 = System.currentTimeMillis();
+			ComponentStatistics.getInstance().setDataManagerTime(t2-t1); //statics traj2text
 		}
 		mapTrajectories.put(key, text);
 	}
 
-	private void update(String trajId, String aspName, String aspValue) throws SQLException {
+	private void update(String trajId, String aspName, String aspValue) throws Exception {
+		Long t1 = System.currentTimeMillis();
+		
 		dao.update("tb_" + aspName, trajId, aspValue);
+
+		Long t2 = System.currentTimeMillis();
+		ComponentStatistics.getInstance().setInputTime(t2-t1); //static dw manager
 	}
 
-	private void insert(String trajId, String aspName, String aspValue) throws SQLException {
+	private void insert(String trajId, String aspName, String aspValue) throws Exception {
+		Long t1 = System.currentTimeMillis();
+		
 		dao.insert("tb_" + aspName, trajId, aspValue);
+		
+		Long t2 = System.currentTimeMillis();
+		ComponentStatistics.getInstance().setInputTime(t2-t1); //static dw manager
 	}
 
 	private void createTable(String aspName) throws SQLException {

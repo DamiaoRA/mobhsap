@@ -23,6 +23,7 @@ import mobhsap.foursquare.FoursquareInput;
 import mobhsap.model.Message;
 import mobhsap.tripbuilder.TripBuilderAspectDAO;
 import mobhsap.tripbuilder.TripBuilderInput;
+import mobhsap.util.ComponentStatistics;
 import mobhsap.util.StringUtils;
 import mobhsap.util.Trajectory2Text;
 
@@ -70,14 +71,34 @@ public class Main_Input {
 
 	public void start() throws Exception {
 		Message m = inputPoi.nextMessage();
+
 		traj2text = new Trajectory2Text(m.getaspectsType(), separator);
 		while(m != null) {
-//			etl.nextMessage(m);
+			etl.nextMessage(m);
 			traj2text.nextMessage(m);
+
+			Long t1 = System.currentTimeMillis(); 
+
 			m = inputPoi.nextMessage();
+			
+			Long t2 = System.currentTimeMillis();
+			ComponentStatistics.getInstance().setInputTime(t2-t1); //static for input
+			ComponentStatistics.getInstance().flush();
 		}
+		ComponentStatistics.getInstance().close();
 		etl.finish();
 	}
+
+//	public void start() throws Exception {
+//		Message m = inputPoi.nextMessage();
+//		traj2text = new Trajectory2Text(m.getaspectsType(), separator);
+//		while(m != null) {
+//			etl.nextMessage(m);
+//			traj2text.nextMessage(m);
+//			m = inputPoi.nextMessage();
+//		}
+//		etl.finish();
+//	}
 
 	public static void main(String[] args) throws Exception {
 		long t1 = System.currentTimeMillis();
